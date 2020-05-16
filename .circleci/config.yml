@@ -1,17 +1,36 @@
 version: 2.1
-orbs:
-  node: circleci/node@2.0.2
 jobs:
-  build-and-test:
-    executor:
-      name: node/default
+  lint:
+    docker:
+      - image: circleci/node:13.8.0
     steps:
       - checkout
-      - node/with-cache:
-          steps:
-            - run: npm install
-            - run: npm test
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install packages
+          command: npm install
+      - run:
+          name: Run lint
+          command: npm run lint
+  test:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install packages
+          command: npm install
+      - run:
+          name: Quay Auth
+          command: npm run test
 workflows:
-    build-and-test:
-      jobs:
-        - build-and-test
+  version: 2
+  workflow:
+    jobs:
+      - lint:
+          context: Build
+      - test:
+          context: Build
