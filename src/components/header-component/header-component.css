@@ -1,5 +1,13 @@
-.component-app {
-  width: 100px;
-  height: 100px;
+.main-header {
+  width: 100%;
+  min-height: 100px;
   background: red;
+  vertical-align: middle;
+}
+
+.main-title {
+  text-align: left;
+  font-size: 3em;
+  color: white;
+  padding-left: 50px;
 }
