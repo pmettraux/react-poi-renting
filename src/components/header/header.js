@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SearchAppBar() {
+export default function HeaderComponent() {
   const classes = useStyles();
 
   return (
@@ -79,7 +79,7 @@ export default function SearchAppBar() {
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
-            Material-UI
+            > PLEASE INSERT APP TITLE HERE LEL
           </Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
