@@ -79,7 +79,7 @@ export default function HeaderComponent() {
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
-            > PLEASE INSERT APP TITLE HERE LEL
+            PLEASE INSERT APP TITLE HERE LEL
           </Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
