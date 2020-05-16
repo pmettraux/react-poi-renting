@@ -8,6 +8,9 @@ function App() {
     <div className="App">
       <HeaderComponent/>
     </div>
+    <div>
+      Learn React
+    </div>
   );
 }
 
