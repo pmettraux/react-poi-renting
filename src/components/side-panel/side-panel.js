@@ -1,34 +1,43 @@
 import React from "react";
+import IconButton from '@material-ui/core/IconButton'
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
+import NavigateNext from '@material-ui/icons/NavigateNext';
+import NavigateBefore from '@material-ui/icons/NavigateBefore';
 import "./side-panel.scss";
 
 export default class SidePanelComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { isToggleOn: false };
+    this.state = { isOpen: false };
 
-    this.handleClick = this.handleClick.bind(this);
+    this.toggleDrawer = this.toggleDrawer.bind(this);
   }
 
-  handleClick() {
+  toggleDrawer() {
     this.setState(state => ({
-      isToggleOn: !state.isToggleOn
+      isOpen: !state.isOpen
     }));
   }
 
   render() {
+    let iconButton;
+    if (this.state.isOpen) {
+      iconButton = <NavigateBefore color="grey" />;
+    } else {
+      iconButton = <NavigateNext color="grey" />;
+    }
     return (
-      <div className={this.state.isToggleOn ? 'side-panel open' : 'side-panel'}>
-        <div className="arrow" onClick={this.handleClick} ></div>
-        <div className="content">
-          TODO: ADD CONTENT HERE<br/>
-          TODO: ADD CONTENT HERE<br/>
-          TODO: ADD CONTENT HERE<br/>
-          TODO: ADD CONTENT HERE<br/>
-          TODO: ADD CONTENT HERE<br/>
-          TODO: ADD CONTENT HERE<br/>
-          TODO: ADD CONTENT HERE<br/>
-          TODO: ADD CONTENT HERE<br/>
-        </div>
+      <div className="side-panel">  
+        <IconButton onClick={this.toggleDrawer} className="button-toggle">
+            {iconButton}
+        </IconButton>      
+        <SwipeableDrawer
+          anchor="left"
+          open={this.state.isOpen}
+          onClose={this.toggleDrawer}
+          onOpen={this.toggleDrawer}
+        >asdasdas
+        </SwipeableDrawer>
       </div>
     );
   }

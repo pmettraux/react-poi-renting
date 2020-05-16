@@ -1,25 +1,35 @@
 .side-panel {
-  position: fixed;
-  left: -150px;
-  top: 100px;
-  width: 200px;
-  transition: left 1s ease-out;
-
-  .arrow {
-    float: right;
-    width: 50px;
-    height: 50px;
-    background: #f00;
-    cursor: pointer;
-  }
-
-  .content {
-    float: left;
-    width: 150px;
-    background: #fff;
-  }
-
-  &.open {
-    left: 0px;
+  .button-toggle {
+    position: absolute;
+    top: 100px;
+    left: 50px;
+    background: white;
   }
 }
+
+
+// .side-panel {
+//   position: fixed;
+//   left: -150px;
+//   top: 100px;
+//   width: 200px;
+//   transition: left 1s ease-out;
+
+//   .arrow {
+//     float: right;
+//     width: 50px;
+//     height: 50px;
+//     background: #f00;
+//     cursor: pointer;
+//   }
+
+//   .content {
+//     float: left;
+//     width: 150px;
+//     background: #fff;
+//   }
+
+//   &.open {
+//     left: 0px;
+//   }
+// }
