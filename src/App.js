@@ -12,6 +12,9 @@ function App() {
       <MainHeader />
         <div className="App-map-size">
          <MapComponent/>
+         <div>
+           test
+         </div>
         </div>  
       <SidePanelComponent />
     </div>
