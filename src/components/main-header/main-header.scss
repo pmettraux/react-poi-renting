@@ -4,4 +4,43 @@
     .title {
         flex-grow: 1;
     }
+
+    .search-box {
+        position: relative;
+        margin-left: 0;
+        border-radius: 4px;
+        background-color: rgba(255, 255, 255, 0.15);
+
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+        
+        .search-icon {
+            height: 100%;
+            display: flex;
+            padding: 0px 16px;
+            position: absolute;
+            align-items: center;
+            pointer-events: none;
+            justify-content: center;
+        }
+
+        .input-root {
+            cursor: text;
+            display: inline-flex;
+            position: relative;
+            font-size: 1rem;
+            box-sizing: border-box;
+            align-items: center;
+            font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+            font-weight: 400;
+        }
+
+        .input-input {
+            padding: 8px 8px 8px 0px;
+            transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+            padding-left: calc(1em + 32px);
+        }
+
+    }
 }
