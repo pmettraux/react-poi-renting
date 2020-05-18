@@ -19,9 +19,9 @@ export default class LeafletMapComponent extends Component {
     constructor() {
         super();
         this.state = {
-            lat: lat,
-            lng: lng,
-            zoom: zoom,
+            lat: DEFAULT_LATITUDE,
+            lng: DEFAULT_LONGITUDE,
+            zoom: DEFAULT_ZOOM,
         };
     }
 
