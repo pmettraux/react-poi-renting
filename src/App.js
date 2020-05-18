@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 import MainHeader from './components/main-header/main-header';
@@ -10,12 +9,9 @@ function App() {
   return (
     <div className="App">
       <MainHeader />
-        <div className="App-map-size">
-         <MapComponent/>
-         <div>
-           test
-         </div>
-        </div>  
+      <div className="App-map-size">
+        <MapComponent />
+      </div>
       <SidePanelComponent />
     </div>
   );
