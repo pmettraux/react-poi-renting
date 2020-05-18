@@ -3,16 +3,13 @@ import './App.css';
 
 import MainHeader from './components/main-header/main-header';
 import SidePanelComponent from './components/side-panel/side-panel';
-import MapComponent from './components/map-component/map-component';
-
+import LeafletMapComponent from './components/map-component/map';
 
 function App() {
   return (
     <div className="App">
       <MainHeader />
-      <div className="App-map-size">
-        <MapComponent />
-      </div>
+      <LeafletMapComponent/>
       <SidePanelComponent />
     </div>
   );
