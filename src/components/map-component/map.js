@@ -11,9 +11,9 @@ L.Icon.Default.mergeOptions({
     shadowUrl: require('leaflet/dist/images/marker-shadow.png')
 });
 
-const lat = 46.292894;
-const lng = 7.536433;
-const zoom = 10;
+const DEFAULT_LATITUDE = 46.292894;
+const DEFAULT_LONGITUDE = 7.536433;
+const DEFAULT_ZOOM= 10;
 
 export default class LeafletMapComponent extends Component {
     constructor() {
