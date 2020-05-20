@@ -19,10 +19,10 @@ export default class SidePanelComponent extends React.Component {
 
   render() {
     return (
-      <div className="side-panel">  
-        <div className={'button-toggle' + (this.state.isOpen ? ' open' : '') } onClick={this.toggleDrawer}>
-        <NavigateNext color="grey" />
-        </div>      
+      <div className="side-panel">
+        <div className={'button-toggle' + (this.state.isOpen ? ' open' : '')} onClick={this.toggleDrawer}>
+          <NavigateNext />
+        </div>
         <SwipeableDrawer
           anchor="left"
           open={this.state.isOpen}
