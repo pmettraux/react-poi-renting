@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Map, Marker, Popup, TileLayer } from "react-leaflet";
 import * as locData from "./data/location-data.json";
 import L from 'leaflet';
+import './map.scss';
 
 //Correction of the invisble icon
 delete L.Icon.Default.prototype._getIconUrl;
@@ -28,7 +29,7 @@ export default class LeafletMapComponent extends Component {
     render() {
         const position = [this.state.lat, this.state.lng]
         return (
-            <div>
+            <div className='map-wrapper'>
                 <Map center={position} zoom={this.state.zoom}>
                     <TileLayer
                         attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
