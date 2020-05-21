@@ -9,20 +9,21 @@ import './main-header.scss';
 
 export default class MainHeader extends React.Component {
 
+    // login button is pressed
     login() {
         console.log('Logging in');
     }
 
-    // handles what happens when a user presses enter in search box
+    // enter pressed in search box
     search(e) {
         if (e.key === 'Enter') {
             console.log('Searching...');
         }
     }
 
-    // handles onChange of search box for auto-complete in the future
+    // text in search input changed
     searchTextChanged(e) {
-        console.log("Search text changed : "+e.target.value);
+        console.log("Search text changed : " + e.target.value);
     }
 
     render() {
@@ -48,8 +49,9 @@ export default class MainHeader extends React.Component {
                                 onKeyDown={this.search}
                             />
                         </div>
-                        <Button className="login-button" 
-                                onClick={this.login}>
+                        <Button
+                            className="login-button"
+                            onClick={this.login}>
                             Login
                         </Button>
                     </Toolbar>
