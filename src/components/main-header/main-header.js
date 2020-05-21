@@ -9,6 +9,22 @@ import './main-header.scss';
 
 export default class MainHeader extends React.Component {
 
+    login() {
+        console.log('Logging in');
+    }
+
+    // handles what happens when a user presses enter in search box
+    search(e) {
+        if (e.key === 'Enter') {
+            console.log('Searching...');
+        }
+    }
+
+    // handles onChange of search box for auto-complete in the future
+    searchTextChanged(e) {
+        console.log("Search text changed : "+e.target.value);
+    }
+
     render() {
         return (
             <div className="main-header">
@@ -28,10 +44,12 @@ export default class MainHeader extends React.Component {
                                     input: "input-input"
                                 }}
                                 inputProps={{ 'aria-label': 'search' }}
+                                onChange={this.searchTextChanged}
+                                onKeyDown={this.search}
                             />
                         </div>
                         <Button className="login-button" 
-                                onClick={this.toggleDrawer}>
+                                onClick={this.login}>
                             Login
                         </Button>
                     </Toolbar>
