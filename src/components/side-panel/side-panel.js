@@ -1,7 +1,7 @@
-import React from "react";
-import SwipeableDrawer from '@material-ui/core/SwipeableDrawer'
+import React from 'react';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import NavigateNext from '@material-ui/icons/NavigateNext';
-import "./side-panel.scss";
+import './side-panel.scss';
 
 export default class SidePanelComponent extends React.Component {
   constructor(props) {
@@ -12,23 +12,24 @@ export default class SidePanelComponent extends React.Component {
   }
 
   toggleDrawer() {
-    this.setState(state => ({
-      isOpen: !state.isOpen
+    this.setState((state) => ({
+      isOpen: !state.isOpen,
     }));
   }
 
   render() {
     return (
-      <div className="side-panel">  
-        <div className={'button-toggle' + (this.state.isOpen ? ' open' : '') } onClick={this.toggleDrawer}>
-          <NavigateNext className='toggle-text'/>
-        </div>      
+      <div className="side-panel">
+        <div className={`button-toggle${this.state.isOpen ? ' open' : ''}`} onClick={this.toggleDrawer}>
+          <NavigateNext className="toggle-text" />
+        </div>
         <SwipeableDrawer
           anchor="left"
           open={this.state.isOpen}
           onClose={this.toggleDrawer}
           onOpen={this.toggleDrawer}
-        >asdasdas
+        >
+          asdasdas
         </SwipeableDrawer>
       </div>
     );
