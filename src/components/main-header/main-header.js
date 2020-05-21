@@ -1,10 +1,11 @@
-import React from "react";
+import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
+import Button from '@material-ui/core/Button';
 import SearchIcon from '@material-ui/icons/Search';
-import "./main-header.scss";
+import './main-header.scss';
 
 export default class MainHeader extends React.Component {
 
@@ -29,6 +30,10 @@ export default class MainHeader extends React.Component {
                                 inputProps={{ 'aria-label': 'search' }}
                             />
                         </div>
+                        <Button className="login-button" 
+                                onClick={this.toggleDrawer}>
+                            Login
+                        </Button>
                     </Toolbar>
                 </AppBar>
             </div>
