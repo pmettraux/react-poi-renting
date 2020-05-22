@@ -12,25 +12,23 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import '../poi-modal/poi-modal.scss'
 
 
-
-
 export default class FormDialog extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-        open: false,
+        open: false
     };
   }
 
-  handleClickOpen() {
-    this.setState(state => ({
+  handleClickOpen = () =>  {
+    this.setState((state) => ({
         open : state.open = true
     }));
   }
 
-  handleClose() {
-    this.setState(state => ({
+  handleClose = () =>  {
+    this.setState((state) => ({
         open : state.open = false
     }));
   }
