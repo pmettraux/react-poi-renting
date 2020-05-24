@@ -18,14 +18,14 @@ const DEFAULT_ZOOM = 10;
 export default class LeafletMapComponent extends Component {
     constructor() {
         super();
-        this.state = {
+        this.state={
             lat: DEFAULT_LATITUDE,
             lng: DEFAULT_LONGITUDE,
             zoom: DEFAULT_ZOOM,
         };
     }
 
-    getCurrentLocation = () => {
+    getCurrentLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 position => {
@@ -45,18 +45,18 @@ export default class LeafletMapComponent extends Component {
     }
 
     render() {
-        const position = [this.state.lat, this.state.lng]
+        const position=[this.state.lat, this.state.lng]
         return (
             <div>
                 <Map center = {position} zoom = {this.state.zoom}>
                     <TileLayer
-                        attribution ='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                        url ="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
                     {locData.features.map((loc) => (
                         <Marker
-                            key = {loc.properties.LOC_ID}
-                            position = {{
+                            key={loc.properties.LOC_ID}
+                            position={{
                                 lat: loc.geometry.coordinates[0],
                                 lng: loc.geometry.coordinates[1]
                             }}
