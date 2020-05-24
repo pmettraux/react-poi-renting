@@ -48,15 +48,15 @@ export default class LeafletMapComponent extends Component {
         const position = [this.state.lat, this.state.lng]
         return (
             <div>
-                <Map center={position} zoom={this.state.zoom}>
+                <Map center = {position} zoom = {this.state.zoom}>
                     <TileLayer
-                        attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution ='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                        url ="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
                     {locData.features.map((loc) => (
                         <Marker
-                            key={loc.properties.LOC_ID}
-                            position={{
+                            key = {loc.properties.LOC_ID}
+                            position = {{
                                 lat: loc.geometry.coordinates[0],
                                 lng: loc.geometry.coordinates[1]
                             }}
@@ -65,7 +65,7 @@ export default class LeafletMapComponent extends Component {
                         />
                     ))
                     }
-                    <Marker position={position}>
+                    <Marker position = {position}>
                         <Popup>
                             You're here.
                         </Popup>
