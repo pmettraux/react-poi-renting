@@ -67,7 +67,7 @@ export default class LeafletMapComponent extends Component {
                     }
                     <Marker position = {position}>
                         <Popup>
-                            You're here.
+                            You&apos;re here.
                         </Popup>
                     </Marker>
                 </Map>
