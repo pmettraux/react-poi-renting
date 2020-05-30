@@ -19,46 +19,62 @@ const DEFAULT_LONGITUDE = 7.536433;
 const DEFAULT_ZOOM = 10;
 
 export default class LeafletMapComponent extends Component {
-  constructor() {
-    super();
-    this.state = {
-      lat: DEFAULT_LATITUDE,
-      lng: DEFAULT_LONGITUDE,
-      zoom: DEFAULT_ZOOM,
-    };
-  }
+    constructor() {
+        super();
+        this.state={
+            lat: DEFAULT_LATITUDE,
+            lng: DEFAULT_LONGITUDE,
+            zoom: DEFAULT_ZOOM,
+        };
+    }
 
-  render() {
-    const position = [this.state.lat, this.state.lng];
-    return (
-      <div className="map-wrapper">
-        <Map center={position} zoom={this.state.zoom}>
-          <TileLayer
-            attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          {locData.features.map((loc) => (
-            <Marker
-              key={loc.properties.LOC_ID}
-              position={{
-                lat: loc.geometry.coordinates[0],
-                lng: loc.geometry.coordinates[1],
-              }}
-              name={loc.properties.NAME}
-              description={loc.properties.DESCRIPTION}
-            />
-          ))}
-          <Marker position={position}>
-            <Popup>
-              A pretty CSS3 popup.
-              {' '}
-              <br />
-              {' '}
-              Easily customizable.
-            </Popup>
-          </Marker>
-        </Map>
-      </div>
-    );
-  }
-}
+    getCurrentLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    this.setState({
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    });
+                }
+            )
+        } else {
+            console.log("Cannot get location");
+        }
+    }
+
+    componentDidMount(){
+        this.getCurrentLocation(); //get the location trough the web browser
+    }
+
+    render() {
+        const position=[this.state.lat, this.state.lng]
+        return (
+            <div>
+                <Map center = {position} zoom = {this.state.zoom}>
+                    <TileLayer
+                        attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
+                    {locData.features.map((loc) => (
+                        <Marker
+                            key={loc.properties.LOC_ID}
+                            position={{
+                                lat: loc.geometry.coordinates[0],
+                                lng: loc.geometry.coordinates[1]
+                            }}
+                            name={loc.properties.NAME}
+                            description={loc.properties.DESCRIPTION}
+                        />
+                    ))
+                    }
+                    <Marker position = {position}>
+                        <Popup>
+                            You&apos;re here.
+                        </Popup>
+                    </Marker>
+                </Map>
+            </div>
+        )
+    }
+} 
