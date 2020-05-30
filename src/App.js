@@ -8,11 +8,11 @@ import Loading from './components/loading/loading';
 import { useAuth0 } from './shared/react-auth0-spa';
 
 function App() {
-
-  // console.log('useAuth0', useAuth0());
-
   let {
     loading,
+    logout,
+    loginWithRedirect,
+    isAuthenticated,
   } = useAuth0();
 
   if (loading) {
@@ -21,7 +21,7 @@ function App() {
 
   return (
     <div className="App">
-      <MainHeader />
+      <MainHeader logout={logout} isAuthenticated={isAuthenticated} loginWithRedirect={loginWithRedirect} />
       <LeafletMapComponent/>
       <SidePanelComponent />
     </div>

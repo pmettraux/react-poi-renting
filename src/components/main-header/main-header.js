@@ -9,9 +9,29 @@ import './main-header.scss';
 
 export default class MainHeader extends React.Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            logout: props.logout,
+            isAuthenticated: props.isAuthenticated,
+            loginWithRedirect: props.loginWithRedirect,
+        };
+
+        this.logout = this.logout.bind(this);
+        this.login = this.login.bind(this);
+    }
+
+    // logout button is pressed
+    logout(e) {
+        e.preventDefault();
+        this.state.logout({ returnTo: process.env.REACT_APP_BASE_URL });
+    }
+
     // login button is pressed
-    login() {
-        console.log('Logging in');
+    login(e) {
+        e.preventDefault();
+        this.state.loginWithRedirect();
     }
 
     // enter pressed in search box
@@ -49,11 +69,20 @@ export default class MainHeader extends React.Component {
                                 onKeyDown={this.search}
                             />
                         </div>
-                        <Button
-                            className="login-button"
-                            onClick={this.login}>
-                            Login
-                        </Button>
+                        {this.state.isAuthenticated && (
+                            <Button
+                                className="logout-button"
+                                onClick={this.logout}>
+                                Logout
+                            </Button>
+                        )}
+                        {!this.state.isAuthenticated && (
+                            <Button
+                                className="login-button"
+                                onClick={this.login}>
+                                Login
+                            </Button>
+                        )}
                     </Toolbar>
                 </AppBar>
             </div>
