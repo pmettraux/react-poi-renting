@@ -11,69 +11,69 @@ import AddIcon from '@material-ui/icons/Add';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import '../poi-modal/poi-modal.scss'
 
-
 export default class FormDialog extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
         open: false
     };
+    this.handleClickOpen = this.handleClickOpen.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
-  handleClickOpen = () =>  {
-    this.setState((state) => ({
-        open : state.open = true
+  handleClickOpen() {
+    this.setState(() => ({
+        open: true
     }));
   }
 
-  handleClose = () =>  {
-    this.setState((state) => ({
-        open : state.open = false
+  handleClose() {
+    this.setState(() => ({
+        open: false
     }));
   }
 
   render() {
-  return (
-    <div>
-        <div className="add-poi-fab" onClick={this.handleClickOpen}>
-            <Fab className="fab" color="primary" aria-label="add">
-                <AddIcon />
-            </Fab>
-        </div>
-        <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title">New POI</DialogTitle>
-            <DialogContent>
-            <DialogContentText>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </DialogContentText>
-            <TextField
-                autoFocus
-                margin="dense"
-                id="name"
-                label="Name"
-                type="text"
-                fullWidth
-            />
-            <div className="upload-poi-picture">
-                <Button component="label">
-                    <CloudUploadIcon color="primary"></CloudUploadIcon>
-                    <input type="file" style={{ display: "none" }}/>
-                </Button>
-                <span>Upload a picture of the POI</span>
+    return (
+        <div>
+            <div className="add-poi-fab" onClick={this.handleClickOpen}>
+                <Fab className="fab" color="primary" aria-label="add">
+                    <AddIcon />
+                </Fab>
             </div>
-            </DialogContent>
-            <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
-                Cancel
-            </Button>
-            <Button onClick={this.handleClose} color="primary">
-                Submit
-            </Button>
-            </DialogActions>
-        </Dialog>
-    </div>
-  );
+            <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">New POI</DialogTitle>
+                <DialogContent>
+                <DialogContentText>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                </DialogContentText>
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Name"
+                    type="text"
+                    fullWidth
+                />
+                <div className="upload-poi-picture">
+                    <Button component="label">
+                        <CloudUploadIcon color="primary"></CloudUploadIcon>
+                        <input type="file" style={{ display: "none" }}/>
+                    </Button>
+                    <span>Upload a picture of the POI</span>
+                </div>
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={this.handleClose} color="primary">
+                    Cancel
+                </Button>
+                <Button onClick={this.handleClose} color="primary">
+                    Submit
+                </Button>
+                </DialogActions>
+            </Dialog>
+        </div>
+    );
   }
 }
