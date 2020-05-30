@@ -5,9 +5,10 @@ import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
 import Button from '@material-ui/core/Button';
 import SearchIcon from '@material-ui/icons/Search';
+import PropTypes from 'prop-types';
 import './main-header.scss';
 
-export default class MainHeader extends React.Component {
+class MainHeader extends React.Component {
 
     constructor(props) {
         super(props);
@@ -88,5 +89,12 @@ export default class MainHeader extends React.Component {
             </div>
         );
     }
-
 }
+
+MainHeader.propTypes = {
+    logout: PropTypes.node.isRequired,
+    isAuthenticated: PropTypes.node.isRequired,
+    loginWithRedirect: PropTypes.node.isRequired,
+}
+
+export default MainHeader;

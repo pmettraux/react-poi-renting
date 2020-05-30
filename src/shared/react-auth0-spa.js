@@ -10,8 +10,8 @@ export const Auth0Context = React.createContext();
 export const useAuth0 = () => useContext(Auth0Context);
 // console.log('useAuth0', Auth0Context);
 export const Auth0Provider = ({
-  children,
-  onRedirectCallback = DEFAULT_REDIRECT_CALLBACK,
+  children, // eslint-disable-line
+  onRedirectCallback = DEFAULT_REDIRECT_CALLBACK, // eslint-disable-line
   ...initOptions
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState();
