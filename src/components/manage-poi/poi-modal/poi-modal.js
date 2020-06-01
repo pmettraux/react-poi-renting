@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -13,77 +13,57 @@ import '../poi-modal/poi-modal.scss'
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import MyLocationIcon from '@material-ui/icons/MyLocation';
+// import { useAuth0 } from "../../../shared/react-auth0-spa";
+// import request from "../../../shared/request";
 
-export default class FormDialog extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-        open: false,
-        geolocationAvailable: false,
-        form: {
-            lat: '',
-            lng: '',
-            name: '',
-            description: '',
+export default function FormDialog() {
+    const [open, setOpen] = useState(false);
+    const [geolocationAvailable, setGeolocationAvailable] = useState(false);
+    const [form, setForm] = useState({
+        lat: '',
+        lng: '',
+        name: '',
+        description: '',
+    });
+
+    useEffect(() => {
+        if ('geolocation' in navigator) {
+            setGeolocationAvailable(true);
         }
-    };
-    this.handleClickOpen = this.handleClickOpen.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.getMyLocation = this.getMyLocation.bind(this);
-  }
+    })
 
-  componentDidMount() {
-    if ('geolocation' in navigator) {
-        this.setState({ geolocationAvailable: true });
+    const handleClickOpen = () => {
+        setOpen(true);
     }
-  }
 
-  handleClickOpen() {
-    this.setState(() => ({
-        open: true
-    }));
-  }
+    const handleClose = () => {
+        setOpen(false);
+    }
 
-  handleClose() {
-    this.setState(() => ({
-        open: false
-    }));
-  }
+    const handleChange = (e) => {
+        const {id, value} = e.target
+        setForm({...form, [id]: value})
+    }
 
-  handleChange(event) {
-    let data = this.state.form;
-    data[event.target.id] = event.target.value;
-    this.setState({
-      form: data,
-    });
-  }
+    const createPoi = () => {
+        console.log('TODO: CREATE POI');
+    }
 
-  createPoi() {
-    console.log('TODO: CREATE POI');
-  }
-
-  getMyLocation() {
-    navigator.geolocation.getCurrentPosition((position) => {
-        let data = this.state.form;
-        data.lat = position.coords.latitude;
-        data.lng = position.coords.longitude;
-        this.setState({
-            form: data
+    const getMyLocation = () => {
+        navigator.geolocation.getCurrentPosition((position) => {
+            setForm({...form, lat: position.coords.latitude, lng: position.coords.longitude});
         });
-    });
-  }
+    }
 
-  render() {
     return (
         <div>
-            <div className="add-poi-fab" onClick={this.handleClickOpen}>
+            <div className="add-poi-fab" onClick={handleClickOpen}>
                 <Fab className="fab" color="primary" aria-label="add">
                     <AddIcon />
                 </Fab>
             </div>
-            <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
-                <form onSubmit={this.createPoi}>
+            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                <form onSubmit={createPoi}>
                     <DialogTitle id="form-dialog-title">New POI</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
@@ -96,8 +76,8 @@ export default class FormDialog extends React.Component {
                                     label="Latitude" 
                                     margin="dense"
                                     variant="outlined"
-                                    value={this.state.form.lat}
-                                    onChange={this.handleChange}
+                                    value={form.lat}
+                                    onChange={handleChange}
                                 />
                             </Grid>
                             <Grid item xs={4}>
@@ -106,14 +86,14 @@ export default class FormDialog extends React.Component {
                                     label="Longitude" 
                                     margin="dense"
                                     variant="outlined"
-                                    value={this.state.form.lng}
-                                    onChange={this.handleChange}
+                                    value={form.lng}
+                                    onChange={handleChange}
                                 />
                             </Grid>
                             <Grid item xs={4}>
                                 {
-                                    this.state.geolocationAvailable && (
-                                    <IconButton onClick={this.getMyLocation}>
+                                    geolocationAvailable && (
+                                    <IconButton onClick={getMyLocation}>
                                         <MyLocationIcon />
                                     </IconButton>
                                     )
@@ -128,8 +108,8 @@ export default class FormDialog extends React.Component {
                             type="text"
                             fullWidth
                             variant="outlined"
-                            value={this.state.form.name}
-                            onChange={this.handleChange}
+                            value={form.name}
+                            onChange={handleChange}
                         />
                         <TextField
                             id="description"
@@ -139,8 +119,8 @@ export default class FormDialog extends React.Component {
                             rows={4}
                             fullWidth
                             variant="outlined"
-                            value={this.state.form.description}
-                            onChange={this.handleChange}
+                            value={form.description}
+                            onChange={handleChange}
                         />
                         <div className="upload-poi-picture">
                             <Button component="label">
@@ -151,10 +131,10 @@ export default class FormDialog extends React.Component {
                         </div>
                     </DialogContent>
                     <DialogActions>
-                    <Button onClick={this.handleClose} color="primary">
+                    <Button onClick={handleClose} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={this.handleClose} color="primary">
+                    <Button onClick={handleClose} color="primary">
                         Submit
                     </Button>
                     </DialogActions>
@@ -162,5 +142,4 @@ export default class FormDialog extends React.Component {
             </Dialog>
         </div>
     );
-  }
 }
