@@ -11,7 +11,6 @@ import AddIcon from '@material-ui/icons/Add';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import '../poi-modal/poi-modal.scss'
 import Grid from '@material-ui/core/Grid';
-import FormControl from '@material-ui/core/FormControl';
 import IconButton from '@material-ui/core/IconButton';
 import MyLocationIcon from '@material-ui/icons/MyLocation';
 
@@ -22,10 +21,10 @@ export default class FormDialog extends React.Component {
         open: false,
         geolocationAvailable: false,
         form: {
-            lat: null,
-            lng: null,
-            name: null,
-            description: null,
+            lat: '',
+            lng: '',
+            name: '',
+            description: '',
         }
     };
     this.handleClickOpen = this.handleClickOpen.bind(this);
@@ -53,8 +52,10 @@ export default class FormDialog extends React.Component {
   }
 
   handleChange(event) {
+    let data = this.state.form;
+    data[event.target.id] = event.target.value;
     this.setState({
-      form: {[event.target.name]: event.target.value},
+      form: data,
     });
   }
 
@@ -64,11 +65,11 @@ export default class FormDialog extends React.Component {
 
   getMyLocation() {
     navigator.geolocation.getCurrentPosition((position) => {
+        let data = this.state.form;
+        data.lat = position.coords.latitude;
+        data.lng = position.coords.longitude;
         this.setState({
-            form: {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude,
-            }
+            form: data
         });
     });
   }
