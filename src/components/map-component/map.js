@@ -1,14 +1,17 @@
-import React, { Component } from 'react'
-import { Map, Marker, Popup, TileLayer } from "react-leaflet";
-import * as locData from "./data/location-data.json";
+import React, { Component } from 'react';
+import {
+  Map, Marker, Popup, TileLayer,
+} from 'react-leaflet';
 import L from 'leaflet';
+import * as locData from './data/location-data.json';
+import './map.scss';
 
-//Correction of the invisble icon
+// Correction of the invisble icon
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-    iconUrl: require('leaflet/dist/images/marker-icon.png'),
-    shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
 
 const DEFAULT_LATITUDE = 46.292894;

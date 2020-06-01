@@ -5,7 +5,7 @@ module.exports = {
     node: true,
   },
   extends: [
-    "eslint:recommended",
+    'eslint:recommended',
     'plugin:react/recommended',
     // 'airbnb',
   ],
@@ -23,16 +23,22 @@ module.exports = {
   plugins: [
     'react',
   ],
+  settings: {
+    "react": {
+      "version": "detect"
+    }
+  },
   rules: {
   },
   overrides: [
     {
       files: [
-        "**/*.spec.js",
+        '**/*.spec.js',
       ],
       env: {
         jest: true
       }
     }
   ]
+  
 };
