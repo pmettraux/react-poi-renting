@@ -13,8 +13,8 @@ import '../poi-modal/poi-modal.scss'
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import MyLocationIcon from '@material-ui/icons/MyLocation';
-// import { useAuth0 } from "../../../shared/react-auth0-spa";
-// import request from "../../../shared/request";
+import { useAuth0 } from "../../../shared/react-auth0-spa";
+import { createPoi } from "../../../shared/api.service";
 
 export default function FormDialog() {
     const [open, setOpen] = useState(false);
@@ -25,6 +25,8 @@ export default function FormDialog() {
         name: '',
         description: '',
     });
+
+    const { loginWithRedirect, getTokenSilently } = useAuth0();
 
     useEffect(() => {
         if ('geolocation' in navigator) {
@@ -45,8 +47,12 @@ export default function FormDialog() {
         setForm({...form, [id]: value})
     }
 
-    const createPoi = () => {
-        console.log('TODO: CREATE POI');
+    const createPoi = async() => {
+        await createPoi(
+            form,
+            getTokenSilently,
+            loginWithRedirect
+        );
     }
 
     const getMyLocation = () => {
@@ -134,7 +140,7 @@ export default function FormDialog() {
                     <Button onClick={handleClose} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={handleClose} color="primary">
+                    <Button type="submit" color="primary">
                         Submit
                     </Button>
                     </DialogActions>
