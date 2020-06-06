@@ -13,9 +13,9 @@ import {
     DialogTitle 
 } from '@material-ui/core';
 import {
-    MyLocationIcon,
-    CloudUploadIcon,
-    AddIcon,
+    MyLocation,
+    CloudUpload,
+    Add,
 } from '@material-ui/icons';
 import { useAuth0 } from '../../../shared/react-auth0-spa';
 import { createPoi } from '../../../shared/api.service';
@@ -36,7 +36,7 @@ export default function FormDialog() {
         if ('geolocation' in navigator) {
             setGeolocationAvailable(true);
         }
-    })
+    }, [])
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -70,7 +70,7 @@ export default function FormDialog() {
         <div>
             <div className="add-poi-fab" onClick={handleClickOpen}>
                 <Fab className="fab" color="primary" aria-label="add">
-                    <AddIcon />
+                    <Add />
                 </Fab>
             </div>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
@@ -105,7 +105,7 @@ export default function FormDialog() {
                                 {
                                     geolocationAvailable && (
                                     <IconButton onClick={getMyLocation}>
-                                        <MyLocationIcon />
+                                        <MyLocation />
                                     </IconButton>
                                     )
                                 }
@@ -135,7 +135,7 @@ export default function FormDialog() {
                         />
                         <div className="upload-poi-picture">
                             <Button component="label">
-                                <CloudUploadIcon color="primary"></CloudUploadIcon>
+                                <CloudUpload color="primary"></CloudUpload>
                                 <input type="file" style={{ display: "none" }}/>
                             </Button>
                             <span>Upload a picture of the POI</span>
