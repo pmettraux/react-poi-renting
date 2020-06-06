@@ -34,12 +34,11 @@ class MainHeader extends React.Component {
         e.preventDefault();
         this.state.loginWithRedirect();
     }
-  }
 
-  // text in search input changed
-  searchTextChanged(e) {
-    console.log(`Search text changed : ${e.target.value}`);
-  }
+    // text in search input changed
+    searchTextChanged(e) {
+        console.log(`Search text changed : ${e.target.value}`);
+    }
 
     render() {
         return (
