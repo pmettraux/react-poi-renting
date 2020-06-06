@@ -49,7 +49,7 @@ export default function LeafletMapComponent() {
                 name: poi.name,
                 description: poi.description,
             }
-        },[]);
+        });
         setPois(pois);
     }
 
