@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import '../poi-modal/poi-modal.scss'
-import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import MyLocationIcon from '@material-ui/icons/MyLocation';
+import { 
+    IconButton,
+    Grid,
+    Fab,
+    Button,
+    TextField,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle 
+} from '@material-ui/core';
+import {
+    MyLocationIcon,
+    CloudUploadIcon,
+    AddIcon,
+} from '@material-ui/icons';
 import { useAuth0 } from "../../../shared/react-auth0-spa";
 import { createPoi } from "../../../shared/api.service";
 
