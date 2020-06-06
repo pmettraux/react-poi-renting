@@ -17,8 +17,8 @@ import {
     CloudUploadIcon,
     AddIcon,
 } from '@material-ui/icons';
-import { useAuth0 } from "../../../shared/react-auth0-spa";
-import { createPoi } from "../../../shared/api.service";
+import { useAuth0 } from '../../../shared/react-auth0-spa';
+import { createPoi } from '../../../shared/api.service';
 
 export default function FormDialog() {
     const [open, setOpen] = useState(false);
