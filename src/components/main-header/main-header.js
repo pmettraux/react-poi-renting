@@ -85,9 +85,9 @@ class MainHeader extends React.Component {
 }
 
 MainHeader.propTypes = {
-    logout: PropTypes.node.isRequired,
-    isAuthenticated: PropTypes.node.isRequired,
-    loginWithRedirect: PropTypes.node.isRequired,
+    logout: PropTypes.func.isRequired,
+    isAuthenticated: PropTypes.bool.isRequired,
+    loginWithRedirect: PropTypes.func.isRequired,
 }
 
 export default MainHeader;
