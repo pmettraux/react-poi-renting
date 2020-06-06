@@ -11,7 +11,7 @@ async function getHeaders(getTokenSilently) {
 
 async function apiCall(callFunc, loginWithRedirect) {
   try{
-    return await callFunc();
+    return await callFunc;
   } catch(e) {
     console.error('apiCall error', e);
     loginWithRedirect();

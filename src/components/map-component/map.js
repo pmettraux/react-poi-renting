@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Map, Marker, Popup, TileLayer,
 } from 'react-leaflet';
 import L from 'leaflet';
-import * as locData from './data/location-data.json';
 import './map.scss';
+import { getPois } from '../../shared/api.service';
+import { useAuth0 } from '../../shared/react-auth0-spa';
 
 // Correction of the invisble icon
 delete L.Icon.Default.prototype._getIconUrl;
@@ -18,63 +19,72 @@ const DEFAULT_LATITUDE = 46.292894;
 const DEFAULT_LONGITUDE = 7.536433;
 const DEFAULT_ZOOM = 10;
 
-export default class LeafletMapComponent extends Component {
-    constructor() {
-        super();
-        this.state={
-            lat: DEFAULT_LATITUDE,
-            lng: DEFAULT_LONGITUDE,
-            zoom: DEFAULT_ZOOM,
-        };
-    }
+export default function LeafletMapComponent() {
+    const [lat, setLat] = useState(DEFAULT_LATITUDE);
+    const [lng, setLng] = useState(DEFAULT_LONGITUDE);
+    const [pois, setPois] = useState([]);
+    const [zoom] = useState(DEFAULT_ZOOM);
+    const position = [lat, lng];
 
-    getCurrentLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                position => {
-                    this.setState({
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    });
-                }
-            )
-        } else {
-            console.log("Cannot get location");
-        }
-    }
+    const { loginWithRedirect, getTokenSilently } = useAuth0();
 
-    componentDidMount(){
-        this.getCurrentLocation(); //get the location trough the web browser
-    }
-
-    render() {
-        const position=[this.state.lat, this.state.lng]
-        return (
-            <div>
-                <Map center = {position} zoom = {this.state.zoom}>
-                    <TileLayer
-                        attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
-                    {locData.features.map((loc) => (
-                        <Marker
-                            key={loc.properties.LOC_ID}
-                            position={{
-                                lat: loc.geometry.coordinates[0],
-                                lng: loc.geometry.coordinates[1]
-                            }}
-                            name={loc.properties.NAME}
-                            description={loc.properties.DESCRIPTION}
-                        />
-                    ))
-                    }
-                    <Marker position = {position}>
-                        <Popup>
-                            You&apos;re here.
-                        </Popup>
-                    </Marker>
-                </Map>
-            </div>
+    const getCurrentLocation = () => {
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                setLat(position.coords.latitude);
+                setLng(position.coords.longitude);
+            }
         )
     }
-} 
+
+    const getListPois = async() => {
+        const results = await getPois(getTokenSilently, loginWithRedirect);
+        const pois = results.data.map(poi => {
+            return {
+                key: poi.id,
+                position: {
+                    lat: poi.lat,
+                    lng: poi.lng,
+                },
+                name: poi.name,
+                description: poi.description,
+            }
+        });
+        setPois(pois);
+    }
+
+    useEffect(() => {
+        if ('geolocation' in navigator) {
+            getCurrentLocation();
+        }
+
+        (async() => {
+            getListPois();
+        })()
+    }, [])
+
+    return (
+        <div>
+            <Map center = {position} zoom = {zoom}>
+                <TileLayer
+                    attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                {pois.length && pois.map((poi) => (
+                    <Marker
+                        key={poi.key}
+                        position={poi.position}
+                        name={poi.name}
+                        description={poi.description}
+                    />
+                ))
+                }
+                <Marker position = {position}>
+                    <Popup>
+                        You&apos;re here.
+                    </Popup>
+                </Marker>
+            </Map>
+        </div>
+    )
+}
