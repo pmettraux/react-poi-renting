@@ -47,7 +47,8 @@ export default function FormDialog() {
         setForm({...form, [id]: value})
     }
 
-    const createPoi = async() => {
+    const sendCreatePoi = async(e) => {
+        e.preventDefault();
         await createPoi(
             form,
             getTokenSilently,
@@ -69,7 +70,7 @@ export default function FormDialog() {
                 </Fab>
             </div>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <form onSubmit={createPoi}>
+                <form onSubmit={sendCreatePoi}>
                     <DialogTitle id="form-dialog-title">New POI</DialogTitle>
                     <DialogContent>
                         <DialogContentText>

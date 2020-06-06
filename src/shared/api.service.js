@@ -1,28 +1,41 @@
-async function apiCall(path, method, data, getTokenSilently, loginWithRedirect) {
+import axios from 'axios';
+
+async function getHeaders(getTokenSilently) {
   let token = await getTokenSilently();
-  const requestOptions = {
-    method: method,
-    headers: {
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`
-    },
-  };
-  if (method === 'POST') {
-    requestOptions.body = JSON.stringify(data);
+
+  return {
+    'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
   }
-  try {
-    const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/${path}`, requestOptions);
-    return await response.json();
-  } catch (e) {
-    console.error(e);
-    await loginWithRedirect();
+}
+
+async function apiCall(callFunc, loginWithRedirect) {
+  try{
+    return await callFunc();
+  } catch(e) {
+    console.error('apiCall error', e);
+    loginWithRedirect();
   }
+
 }
 
 export async function createPoi(data, getTokenSilently, loginWithRedirect) {
-  return apiCall('poi', 'POST', data, getTokenSilently, loginWithRedirect);
+  let headers = await getHeaders(getTokenSilently);
+
+  return await apiCall(
+    axios.post(`${process.env.REACT_APP_SERVER_URL}/poi`,
+      data,
+      { headers: headers }
+    ),
+    loginWithRedirect);
 }
 
 export async function getPois(getTokenSilently, loginWithRedirect) {
-  return apiCall('poi', 'GET', null, getTokenSilently, loginWithRedirect);
+  let headers = await getHeaders(getTokenSilently);
+
+  return await apiCall(
+    axios.get(`${process.env.REACT_APP_SERVER_URL}/poi`,
+      { headers: headers }
+    ),
+    loginWithRedirect);
 }
