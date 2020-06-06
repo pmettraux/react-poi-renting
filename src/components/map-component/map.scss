@@ -6,3 +6,23 @@
         height: 100%;
     }
 }
+.request-popup{
+    .leaflet-popup-content-wrapper {
+    border-radius: 10px;
+    border-style: none;
+    .leaflet-popup-content {
+
+        h1{
+            color: black;
+            font-size: 1.3rem; 
+            font-weight: normal;
+            margin-bottom: 0rem;
+        }
+        p{
+            margin-top: 0rem;
+            color: dimgray;
+            font-size: 1rem;
+        }
+    }
+  }
+}
