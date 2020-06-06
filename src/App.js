@@ -17,6 +17,7 @@ function App() {
     getTokenSilently,
     loginWithRedirect,
     isAuthenticated,
+    user,
   } = useAuth0();
 
   const getListPois = async() => {
@@ -30,6 +31,7 @@ function App() {
         },
         name: poi.name,
         description: poi.description,
+        creatorId:  poi.Creator.id
       }
     });
     setPois(pois);
@@ -55,6 +57,9 @@ function App() {
       />
       <LeafletMapComponent 
         pois={pois}
+        user={user}
+        loginWithRedirect={loginWithRedirect} 
+        getTokenSilently={getTokenSilently}
       />
       <SidePanelComponent />
       <FormDialog />
