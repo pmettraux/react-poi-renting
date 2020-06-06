@@ -74,14 +74,27 @@ export default function LeafletMapComponent() {
                     <Marker
                         key={poi.key}
                         position={poi.position}
-                        name={poi.name}
-                        description={poi.description}
-                    />
+                    >
+                        <Popup className="request-popup">
+                        <div>
+                            <h1>
+                                {poi.name}
+                            </h1>
+                            <p>
+                                {poi.description}
+                            </p>
+                        </div>
+                        </Popup>
+                    </Marker>
                 ))
                 }
-                <Marker position = {position}>
-                    <Popup>
-                        You&apos;re here.
+                <Marker position = {position} >
+                    <Popup className="request-popup">
+                        <div>
+                            <h1>
+                                You&apos;re here
+                            </h1>
+                        </div>
                     </Popup>
                 </Marker>
             </Map>
