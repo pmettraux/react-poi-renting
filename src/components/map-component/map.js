@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Map, Marker, Popup, TileLayer,
+    Map, Marker, Popup, TileLayer,
 } from 'react-leaflet';
 import L from 'leaflet';
 import './map.scss';
 import { getPois } from '../../shared/api.service';
 import { useAuth0 } from '../../shared/react-auth0-spa';
+import FormDialog from '../manage-poi/poi-modal/poi-modal';
 
 // Correction of the invisble icon
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+    iconUrl: require('leaflet/dist/images/marker-icon.png'),
+    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
 
 const DEFAULT_LATITUDE = 46.292894;
@@ -22,9 +23,9 @@ const DEFAULT_ZOOM = 10;
 export default function LeafletMapComponent() {
     const [lat, setLat] = useState(DEFAULT_LATITUDE);
     const [lng, setLng] = useState(DEFAULT_LONGITUDE);
+    const position = [lat, lng];
     const [pois, setPois] = useState([]);
     const [zoom] = useState(DEFAULT_ZOOM);
-    const position = [lat, lng];
 
     const { loginWithRedirect, getTokenSilently } = useAuth0();
 
@@ -37,7 +38,7 @@ export default function LeafletMapComponent() {
         )
     }
 
-    const getListPois = async() => {
+    const getListPois = async () => {
         const results = await getPois(getTokenSilently, loginWithRedirect);
         const pois = results.data.map(poi => {
             return {
@@ -58,14 +59,27 @@ export default function LeafletMapComponent() {
             getCurrentLocation();
         }
 
-        (async() => {
+        (async () => {
             getListPois();
-        })()
-    }, [])
+        })()// eslint-disable-next-line
+    }, []);
+
+    function handleClick(e) {
+        const { lat, lng } = e.latlng;
+        console.log(lat, lng);
+        console.log('Click');
+
+        return (
+              <div>
+                  <FormDialog></FormDialog>
+              </div>  
+             );
+
+    }
 
     return (
         <div>
-            <Map center = {position} zoom = {zoom}>
+            <Map center={position} zoom={zoom} onclick={handleClick}>
                 <TileLayer
                     attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -76,19 +90,19 @@ export default function LeafletMapComponent() {
                         position={poi.position}
                     >
                         <Popup className="request-popup">
-                        <div>
-                            <h1>
-                                {poi.name}
-                            </h1>
-                            <p>
-                                {poi.description}
-                            </p>
-                        </div>
+                            <div>
+                                <h1>
+                                    {poi.name}
+                                </h1>
+                                <p>
+                                    {poi.description}
+                                </p>
+                            </div>
                         </Popup>
                     </Marker>
                 ))
                 }
-                <Marker position = {position} >
+                <Marker position={position} >
                     <Popup className="request-popup">
                         <div>
                             <h1>
