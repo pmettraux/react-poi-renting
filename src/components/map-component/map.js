@@ -29,7 +29,7 @@ class LeafletMapComponent extends Component {
             lng: DEFAULT_LONGITUDE,
             zoom: DEFAULT_ZOOM,
             pois: props.pois,
-            userId: props.userId ? props.userId : undefined,
+            userId: props.userId || undefined,
             loginWithRedirect: props.loginWithRedirect,
             getTokenSilently: props.getTokenSilently
         };
