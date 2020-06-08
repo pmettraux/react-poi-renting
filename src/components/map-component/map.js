@@ -29,11 +29,11 @@ class LeafletMapComponent extends Component {
             lng: DEFAULT_LONGITUDE,
             zoom: DEFAULT_ZOOM,
             pois: props.pois,
-            userId: props.user ? props.user.sub : undefined,
+            userId: props.userId ? props.userId : undefined,
             loginWithRedirect: props.loginWithRedirect,
             getTokenSilently: props.getTokenSilently
         };
-        this.isCreator = this.isCreator.bind(this);
+        this.showDeleteButton = this.showDeleteButton.bind(this);
     }
 
 
@@ -62,19 +62,23 @@ class LeafletMapComponent extends Component {
         }
     }
 
-    isCreator(creator, user, poiKey) {
+    showDeleteButton(creator, user, poiKey) {
         if (creator === user){
             return (
                 <Button
                     variant="contained"
                     color="secondary"
                     startIcon={<DeleteIcon />}
-                   onClick={ () => deletePoi(poiKey,this.props.getTokenSilently,this.props.loginWithRedirect)}
+                    onClick={this.handleDeletePoi(poiKey,this.props.getTokenSilently,this.props.loginWithRedirect)}
                 >
                     Delete
                 </Button>
             );
         }
+    }
+
+    handleDeletePoi = (poiKey, getTokenSilently, loginWithRedirect) => {
+        deletePoi(poiKey, getTokenSilently, loginWithRedirect)
     }
 
 
@@ -102,7 +106,7 @@ class LeafletMapComponent extends Component {
                                 <p>
                                     {poi.description}
                                 </p>
-                                {this.isCreator(poi.creatorId, this.state.userId, poi.key)} 
+                                {this.showDeleteButton(poi.creatorId, this.state.userId, poi.key)} 
                             </div>
                             </Popup>
                         </Marker>

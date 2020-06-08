@@ -57,7 +57,7 @@ function App() {
       />
       <LeafletMapComponent 
         pois={pois}
-        user={user}
+        userId={user.sub}
         loginWithRedirect={loginWithRedirect} 
         getTokenSilently={getTokenSilently}
       />
