@@ -5,6 +5,9 @@ import {
 import L from 'leaflet';
 import './map.scss';
 import PropTypes from 'prop-types';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Button from '@material-ui/core/Button';
+import { deletePoi } from '../../shared/api.service';
 
 // Correction of the invisble icon
 delete L.Icon.Default.prototype._getIconUrl;
@@ -19,15 +22,20 @@ const DEFAULT_LONGITUDE = 7.536433;
 const DEFAULT_ZOOM = 10;
 
 class LeafletMapComponent extends Component {
-    constructor(props) {
+    constructor(props) {        
         super(props);
         this.state = {
             lat: DEFAULT_LATITUDE,
             lng: DEFAULT_LONGITUDE,
             zoom: DEFAULT_ZOOM,
             pois: props.pois,
+            userId: props.userId || undefined,
+            loginWithRedirect: props.loginWithRedirect,
+            getTokenSilently: props.getTokenSilently
         };
+        this.showDeleteButton = this.showDeleteButton.bind(this);
     }
+
 
     getCurrentLocation() {
         if (navigator.geolocation) {
@@ -54,6 +62,26 @@ class LeafletMapComponent extends Component {
         }
     }
 
+    showDeleteButton(creator, user, poiKey) {
+        if (creator === user){
+            return (
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<DeleteIcon />}
+                    onClick={this.handleDeletePoi(poiKey,this.props.getTokenSilently,this.props.loginWithRedirect)}
+                >
+                    Delete
+                </Button>
+            );
+        }
+    }
+
+    handleDeletePoi = (poiKey, getTokenSilently, loginWithRedirect) => {
+        deletePoi(poiKey, getTokenSilently, loginWithRedirect)
+    }
+
+
     render() {
         const position=[this.state.lat, this.state.lng]
         return (
@@ -78,6 +106,7 @@ class LeafletMapComponent extends Component {
                                 <p>
                                     {poi.description}
                                 </p>
+                                {this.showDeleteButton(poi.creatorId, this.state.userId, poi.key)} 
                             </div>
                             </Popup>
                         </Marker>

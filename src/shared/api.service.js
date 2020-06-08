@@ -30,6 +30,17 @@ export async function createPoi(data, getTokenSilently, loginWithRedirect) {
     loginWithRedirect);
 }
 
+export async function deletePoi(key, getTokenSilently, loginWithRedirect) {
+  let headers = await getHeaders(getTokenSilently);
+
+  return await apiCall(
+    axios.delete(`${process.env.REACT_APP_SERVER_URL}/poi/${key}`,
+      { headers: headers }
+    ),
+    loginWithRedirect);
+}
+
+
 export async function getPois(getTokenSilently, loginWithRedirect) {
   let headers = await getHeaders(getTokenSilently);
 
