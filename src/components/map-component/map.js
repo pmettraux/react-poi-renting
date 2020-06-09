@@ -86,12 +86,18 @@ class LeafletMapComponent extends Component {
         await this.state.updatePoiList();
     }
 
+    handleClick(e) {
+        const { lat, lng } = e.latlng;
+        console.log(lat, lng);
+        
+    }
+
 
     render() {
         const position=[this.state.lat, this.state.lng]
         return (
             <div>
-                <Map center = {position} zoom = {this.state.zoom}>
+                <Map center = {position} zoom = {this.state.zoom} onClick={handleClick}>
                     <TileLayer
                         attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
