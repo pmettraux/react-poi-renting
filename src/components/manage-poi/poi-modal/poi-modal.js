@@ -22,16 +22,17 @@ import { useAuth0 } from '../../../shared/react-auth0-spa';
 import { createPoi } from '../../../shared/api.service';
 
 function FormDialog(props) {
-    const [open, setOpen] = useState(false);
-    const [formHasError, setformHasError] = useState(true); // form is empty by default
-    const [geolocationAvailable, setGeolocationAvailable] = useState(false);
-    const [form, setForm] = useState({
+    const emptyForm = {
         lat: '',
         lng: '',
         price: '',
         name: '',
         description: '',
-    });
+    };
+    const [open, setOpen] = useState(false);
+    const [formHasError, setformHasError] = useState(true); // form is empty by default
+    const [geolocationAvailable, setGeolocationAvailable] = useState(false);
+    const [form, setForm] = useState(emptyForm);
 
     const [errors, setErrors] = useStateWithCallback({
         lat: false,
@@ -140,6 +141,7 @@ function FormDialog(props) {
             loginWithRedirect
         );
         setOpen(false);
+        setForm(emptyForm);
         await updatePoiList();
     }
 
