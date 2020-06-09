@@ -106,7 +106,6 @@ class LeafletMapComponent extends Component {
                 <Map
                     center={position}
                     zoom={this.state.zoom}
-                    onClick={this.handleClickPress}
                     onTouchStart={this.handleClickPress}
                     onTouchEnd={this.handleClickRelease}
                     onMouseDown={this.handleClickPress}
