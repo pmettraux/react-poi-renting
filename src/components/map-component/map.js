@@ -93,9 +93,9 @@ class LeafletMapComponent extends Component {
     handleClickPress(e) {
         const { lat, lng } = e.latlng;
         this.buttonPressTimer = setTimeout(() => this.setState({ clickedPosition: { lat, lng } }), TIMER);
-        ;
+        
     }
-    handleClickRelease(e) {
+    handleClickRelease() {
         clearTimeout(this.buttonPressTimer);
     }
 
