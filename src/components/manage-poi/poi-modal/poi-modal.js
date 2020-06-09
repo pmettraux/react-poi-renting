@@ -56,7 +56,11 @@ function FormDialog(props) {
         if ('geolocation' in navigator) {
             setGeolocationAvailable(true);
         }
-    }, [])
+        if (props.position !== undefined){
+            setForm({...form, lat: props.position.lat, lng: props.position.lng});
+            setOpen(true);
+        }
+    }, [props.position])
 
     const checkFormHasError = () => {
         let hasError = false;
@@ -270,6 +274,7 @@ function FormDialog(props) {
 
 FormDialog.propTypes = {
     updatePoiList: PropTypes.func.isRequired,
+    position: PropTypes.object,
 }
 
 
