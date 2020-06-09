@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import '../poi-modal/poi-modal.scss'
 import { 
     IconButton,
@@ -20,7 +21,7 @@ import {
 import { useAuth0 } from '../../../shared/react-auth0-spa';
 import { createPoi } from '../../../shared/api.service';
 
-export default function FormDialog() {
+function FormDialog(props) {
     const [open, setOpen] = useState(false);
     const [geolocationAvailable, setGeolocationAvailable] = useState(false);
     const [form, setForm] = useState({
@@ -31,6 +32,8 @@ export default function FormDialog() {
     });
 
     const { loginWithRedirect, getTokenSilently } = useAuth0();
+
+    const { updatePoiList } = props
 
     useEffect(() => {
         if ('geolocation' in navigator) {
@@ -58,6 +61,8 @@ export default function FormDialog() {
             getTokenSilently,
             loginWithRedirect
         );
+        setOpen(false);
+        updatePoiList();
     }
 
     const getMyLocation = () => {
@@ -154,3 +159,10 @@ export default function FormDialog() {
         </div>
     );
 }
+
+FormDialog.propTypes = {
+    updatePoiList: PropTypes.func.isRequired,
+}
+
+
+export default FormDialog;

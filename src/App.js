@@ -57,12 +57,15 @@ function App() {
       />
       <LeafletMapComponent 
         pois={pois}
-        userId={user.sub}
+        userId={user ? user.sub : undefined}
         loginWithRedirect={loginWithRedirect} 
         getTokenSilently={getTokenSilently}
+        updatePoiList={getListPois}
       />
       <SidePanelComponent />
-      <FormDialog />
+      <FormDialog 
+        updatePoiList={getListPois}
+      />
     </div>
   );
 }
