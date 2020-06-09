@@ -37,7 +37,6 @@ class LeafletMapComponent extends Component {
         this.handleDeletePoi = this.handleDeletePoi.bind(this);
     }
 
-
     getCurrentLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -104,7 +103,7 @@ class LeafletMapComponent extends Component {
                     />
                     {this.state.pois.map((poi) => (
                         <Marker
-                            key={poi.id}
+                            key={poi.key}
                             position={poi.position}
                             name={poi.name}
                             description={poi.description}
