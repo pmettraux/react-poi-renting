@@ -6,11 +6,12 @@ import SidePanelComponent from './components/side-panel/side-panel';
 import LeafletMapComponent from './components/map-component/map';
 import Loading from './components/loading/loading';
 import { useAuth0 } from './shared/react-auth0-spa';
-import { getPois } from './shared/api.service';
+import { getPois, getCategories } from './shared/api.service';
 
 
 function App() {
   const [pois, setPois] = useState([]);
+  const [categories, setCategories] = useState([]);
   const {
     loading,
     logout,
@@ -37,10 +38,20 @@ function App() {
     setPois(pois);
   }
 
+  const getListCategories = async() => {
+    const results = await getCategories(getTokenSilently, loginWithRedirect);
+    setCategories(results.data);
+    console.log('categories', categories);
+  }
+
   useEffect(() => {
     (async() => {
-      if (!loading)
-        getListPois();
+      if (!loading) {
+        await Promise.all([
+          getListPois(),
+          getListCategories(),
+        ]);
+      }
     })()
   }, [loading])
 

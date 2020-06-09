@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import useStateWithCallback from 'use-state-with-callback';
 import PropTypes from 'prop-types';
 import '../poi-modal/poi-modal.scss'
 import { 
@@ -11,11 +12,10 @@ import {
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle 
+    DialogTitle,
 } from '@material-ui/core';
 import {
     MyLocation,
-    CloudUpload,
     Add,
 } from '@material-ui/icons';
 import { useAuth0 } from '../../../shared/react-auth0-spa';
@@ -23,12 +23,28 @@ import { createPoi } from '../../../shared/api.service';
 
 function FormDialog(props) {
     const [open, setOpen] = useState(false);
+    const [formHasError, setformHasError] = useState(true); // form is empty by default
     const [geolocationAvailable, setGeolocationAvailable] = useState(false);
     const [form, setForm] = useState({
         lat: '',
         lng: '',
+        price: '',
         name: '',
         description: '',
+    });
+
+    const [errors, setErrors] = useStateWithCallback({
+        lat: false,
+        lng: false,
+        price: false,
+        name: false,
+        description: false,
+    }, () => {
+        if (!checkFormHasEmptyField() && !checkFormHasError()) {
+            setformHasError(false);
+        } else {
+            setformHasError(true);
+        }
     });
 
     const { loginWithRedirect, getTokenSilently } = useAuth0();
@@ -41,6 +57,26 @@ function FormDialog(props) {
         }
     }, [])
 
+    const checkFormHasError = () => {
+        let hasError = false;
+        Object.keys(errors).forEach(key => {
+            if (errors[key]){
+                hasError = true;
+            }
+        });
+        return hasError;
+    }
+
+    const checkFormHasEmptyField = () => {
+        let isEmpty = false;
+        Object.keys(form).forEach(key => {
+            if (form[key] === ''){
+                isEmpty = true;
+            }
+        });
+        return isEmpty;
+    }
+
     const handleClickOpen = () => {
         setOpen(true);
     }
@@ -49,24 +85,69 @@ function FormDialog(props) {
         setOpen(false);
     }
 
+    const handleFieldValidation = async(fieldName, value) =>  {
+        const minPrice = 0;
+        const maxPrice = 5000;
+        let error = false;
+        switch(fieldName) {
+        case 'lat':
+        case 'lng':
+            if (!value.length) {
+                error = 'This field is required';
+            }
+            if (isNaN(value) || value.indexOf('.') === -1) {
+                error = 'This must be a float';
+            }
+            break;
+        case 'name':
+        case 'description':
+            if (!value.length) {
+                error = 'This field is required';
+            }
+            break;
+        case 'price':
+            if (isNaN(value) || value.indexOf('.') !== -1) {
+                error = 'This must be an integer';
+            }
+            if (!value.length) {
+                error = 'This field is required';
+            }
+            if (parseInt(value) < minPrice || parseInt(value) > maxPrice) {
+                error = `Price has to be between ${minPrice} and ${maxPrice}`;
+            }
+            break;
+        default:
+            break;
+        }
+    
+        return setErrors({...errors, [fieldName]: error})
+    }
+
     const handleChange = (e) => {
         const {id, value} = e.target
+
+        handleFieldValidation(id, value);
+        
         setForm({...form, [id]: value})
     }
 
     const sendCreatePoi = async(e) => {
         e.preventDefault();
+
         await createPoi(
             form,
             getTokenSilently,
             loginWithRedirect
         );
         setOpen(false);
-        updatePoiList();
+        await updatePoiList();
     }
 
     const getMyLocation = () => {
         navigator.geolocation.getCurrentPosition((position) => {
+            errors.lng = false;
+            errors.lat = false;
+            setErrors({...errors});
             setForm({...form, lat: position.coords.latitude, lng: position.coords.longitude});
         });
     }
@@ -80,14 +161,16 @@ function FormDialog(props) {
             </div>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <form onSubmit={sendCreatePoi}>
-                    <DialogTitle id="form-dialog-title">New POI</DialogTitle>
+                    <DialogTitle id="form-dialog-title">Create new renting object</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            Please fill the information in the form bellow
+                            Please fill the information in the form bellow about the object you are renting
                         </DialogContentText>
                         <Grid container spacing={3}>
                             <Grid item xs={4}>
                                 <TextField 
+                                    error={!!errors.lat}
+                                    helperText={errors.lat}
                                     id="lat" 
                                     label="Latitude" 
                                     margin="dense"
@@ -98,6 +181,8 @@ function FormDialog(props) {
                             </Grid>
                             <Grid item xs={4}>
                                 <TextField 
+                                    error={!!errors.lng}
+                                    helperText={errors.lng}
                                     id="lng" 
                                     label="Longitude" 
                                     margin="dense"
@@ -117,6 +202,8 @@ function FormDialog(props) {
                             </Grid>
                         </Grid>
                         <TextField
+                            error={!!errors.name}
+                            helperText={errors.name}
                             autoFocus
                             margin="dense"
                             id="name"
@@ -128,6 +215,8 @@ function FormDialog(props) {
                             onChange={handleChange}
                         />
                         <TextField
+                            error={!!errors.description}
+                            helperText={errors.description}
                             id="description"
                             label="Description"
                             margin="dense"
@@ -138,19 +227,36 @@ function FormDialog(props) {
                             value={form.description}
                             onChange={handleChange}
                         />
-                        <div className="upload-poi-picture">
+                        <TextField
+                            error={!!errors.price}
+                            helperText={errors.price}
+                            autoFocus
+                            margin="dense"
+                            id="price"
+                            label="Price (CHF)"
+                            type="text"
+                            fullWidth
+                            variant="outlined"
+                            value={form.price}
+                            onChange={handleChange}
+                        />
+                        {/* <div className="upload-poi-picture">
                             <Button component="label">
                                 <CloudUpload color="primary"></CloudUpload>
                                 <input type="file" style={{ display: "none" }}/>
                             </Button>
                             <span>Upload a picture of the POI</span>
-                        </div>
+                        </div> */}
                     </DialogContent>
                     <DialogActions>
                     <Button onClick={handleClose} color="primary">
                         Cancel
                     </Button>
-                    <Button type="submit" color="primary">
+                    <Button 
+                        type="submit"
+                        color="primary"
+                        disabled={formHasError}
+                    >
                         Submit
                     </Button>
                     </DialogActions>
