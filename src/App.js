@@ -1,21 +1,59 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
-
 import FormDialog from './components/manage-poi/poi-modal/poi-modal';
 import MainHeader from './components/main-header/main-header';
 import SidePanelComponent from './components/side-panel/side-panel';
 import LeafletMapComponent from './components/map-component/map';
 import Loading from './components/loading/loading';
 import { useAuth0 } from './shared/react-auth0-spa';
+import { getPois, getCategories } from './shared/api.service';
 
 
 function App() {
-  let {
+  const [pois, setPois] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const {
     loading,
     logout,
+    getTokenSilently,
     loginWithRedirect,
     isAuthenticated,
+    user,
   } = useAuth0();
+
+  const getListPois = async() => {
+    const results = await getPois(getTokenSilently, loginWithRedirect);
+    const pois = results.data.map(poi => {
+      return {
+        key: poi.id,
+        position: {
+          lat: poi.lat,
+          lng: poi.lng,
+        },
+        name: poi.name,
+        description: poi.description,
+        creatorId:  poi.Creator.id
+      }
+    });
+    setPois(pois);
+  }
+
+  const getListCategories = async() => {
+    const results = await getCategories(getTokenSilently, loginWithRedirect);
+    setCategories(results.data);
+    console.log('categories', categories);
+  }
+
+  useEffect(() => {
+    (async() => {
+      if (!loading) {
+        await Promise.all([
+          getListPois(),
+          getListCategories(),
+        ]);
+      }
+    })()
+  }, [loading])
 
   if (loading) {
     return <Loading />;
@@ -23,10 +61,22 @@ function App() {
 
   return (
     <div className="App">
-      <MainHeader logout={logout} isAuthenticated={isAuthenticated} loginWithRedirect={loginWithRedirect} />
-      <LeafletMapComponent/>
+      <MainHeader 
+        logout={logout} 
+        isAuthenticated={isAuthenticated} 
+        loginWithRedirect={loginWithRedirect} 
+      />
+      <LeafletMapComponent 
+        pois={pois}
+        userId={user ? user.sub : undefined}
+        loginWithRedirect={loginWithRedirect} 
+        getTokenSilently={getTokenSilently}
+        updatePoiList={getListPois}
+      />
       <SidePanelComponent />
-      <FormDialog />
+      <FormDialog 
+        updatePoiList={getListPois}
+      />
     </div>
   );
 }

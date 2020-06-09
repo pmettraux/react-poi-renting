@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { Component } from 'react';
 import {
     Map, Marker, Popup, TileLayer,
 } from 'react-leaflet';
@@ -7,6 +7,9 @@ import './map.scss';
 import { getPois } from '../../shared/api.service';
 import { useAuth0 } from '../../shared/react-auth0-spa';
 import FormDialog from '../manage-poi/poi-modal/poi-modal';
+import PropTypes from 'prop-types';
+import Button from '@material-ui/core/Button';
+import { deletePoi } from '../../shared/api.service';
 
 // Correction of the invisble icon
 delete L.Icon.Default.prototype._getIconUrl;
@@ -20,98 +23,118 @@ const DEFAULT_LATITUDE = 46.292894;
 const DEFAULT_LONGITUDE = 7.536433;
 const DEFAULT_ZOOM = 10;
 
-export default function LeafletMapComponent() {
-    const [lat, setLat] = useState(DEFAULT_LATITUDE);
-    const [lng, setLng] = useState(DEFAULT_LONGITUDE);
-    const position = [lat, lng];
-    const [pois, setPois] = useState([]);
-    const [zoom] = useState(DEFAULT_ZOOM);
-
-    const { loginWithRedirect, getTokenSilently } = useAuth0();
-
-    const getCurrentLocation = () => {
-        navigator.geolocation.getCurrentPosition(
-            position => {
-                setLat(position.coords.latitude);
-                setLng(position.coords.longitude);
-            }
-        )
+class LeafletMapComponent extends Component {
+    constructor(props) {        
+        super(props);
+        this.state = {
+            lat: DEFAULT_LATITUDE,
+            lng: DEFAULT_LONGITUDE,
+            zoom: DEFAULT_ZOOM,
+            pois: props.pois,
+            userId: props.userId || undefined,
+            loginWithRedirect: props.loginWithRedirect,
+            getTokenSilently: props.getTokenSilently,
+            updatePoiList: props.updatePoiList,
+        };
+        this.showDeleteButton = this.showDeleteButton.bind(this);
+        this.handleDeletePoi = this.handleDeletePoi.bind(this);
     }
 
-    const getListPois = async () => {
-        const results = await getPois(getTokenSilently, loginWithRedirect);
-        const pois = results.data.map(poi => {
-            return {
-                key: poi.id,
-                position: {
-                    lat: poi.lat,
-                    lng: poi.lng,
-                },
-                name: poi.name,
-                description: poi.description,
-            }
-        });
-        setPois(pois);
-    }
-
-    useEffect(() => {
-        if ('geolocation' in navigator) {
-            getCurrentLocation();
+    getCurrentLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    this.setState({
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    });
+                }
+            )
+        } else {
+            console.log("Cannot get location");
         }
+    }
 
-        (async () => {
-            getListPois();
-        })()// eslint-disable-next-line
-    }, []);
+    componentDidMount(){
+        this.getCurrentLocation(); //get the location trough the web browser
+    }
 
-    function handleClick(e) {
+    componentDidUpdate(prevProps) {
+        if (this.props.pois !== prevProps.pois) {
+            this.setState({pois: this.props.pois});
+        }
+    }
+
+    showDeleteButton(creator, user, poiKey) {
+        if (creator === user){
+            return (
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    key={poiKey}
+                    onClick={async() => this.handleDeletePoi(poiKey)}
+                >
+                    Delete
+                </Button>
+            );
+        }
+    }
+
+    async handleDeletePoi(poiKey) {
+        if (!window.confirm('Do you really want to delete this?'))
+            return;
+            
+        await deletePoi(poiKey, this.state.getTokenSilently, this.state.loginWithRedirect);
+        await this.state.updatePoiList();
+    }
+
+    handleClick(e) {
         const { lat, lng } = e.latlng;
         console.log(lat, lng);
-        console.log('Click');
-
-        return (
-              <div>
-                  <FormDialog></FormDialog>
-              </div>  
-             );
-
+        
     }
 
-    return (
-        <div>
-            <Map center={position} zoom={zoom} onclick={handleClick}>
-                <TileLayer
-                    attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                {pois.length && pois.map((poi) => (
-                    <Marker
-                        key={poi.key}
-                        position={poi.position}
-                    >
-                        <Popup className="request-popup">
-                            <div>
+
+    render() {
+        const position=[this.state.lat, this.state.lng]
+        return (
+            <div>
+                <Map center = {position} zoom = {this.state.zoom} onClick={handleClick}>
+                    <TileLayer
+                        attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
+                    {this.state.pois.map((poi) => (
+                        <Marker
+                            key={poi.key}
+                            position={poi.position}
+                            name={poi.name}
+                            description={poi.description}
+                        >
+                            <Popup className="request-popup">
                                 <h1>
                                     {poi.name}
                                 </h1>
                                 <p>
                                     {poi.description}
                                 </p>
-                            </div>
-                        </Popup>
-                    </Marker>
-                ))
-                }
-                <Marker position={position} >
-                    <Popup className="request-popup">
-                        <div>
-                            <h1>
-                                You&apos;re here
-                            </h1>
-                        </div>
-                    </Popup>
-                </Marker>
-            </Map>
-        </div>
-    )
+                                {this.showDeleteButton(poi.creatorId, this.state.userId, poi.key)} 
+                            </Popup>
+                        </Marker>
+                    ))
+                    }
+                </Map>
+            </div>
+        )
+    }
+} 
+
+LeafletMapComponent.propTypes = {
+    pois: PropTypes.array.isRequired,
+    userId: PropTypes.string,
+    loginWithRedirect: PropTypes.func.isRequired,
+    getTokenSilently: PropTypes.func.isRequired,
+    updatePoiList: PropTypes.func.isRequired,
 }
+
+export default LeafletMapComponent;
