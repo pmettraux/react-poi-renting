@@ -5,7 +5,6 @@ import {
 import L from 'leaflet';
 import './map.scss';
 import PropTypes from 'prop-types';
-import DeleteIcon from '@material-ui/icons/Delete';
 import Button from '@material-ui/core/Button';
 import { deletePoi } from '../../shared/api.service';
 
@@ -31,9 +30,11 @@ class LeafletMapComponent extends Component {
             pois: props.pois,
             userId: props.userId || undefined,
             loginWithRedirect: props.loginWithRedirect,
-            getTokenSilently: props.getTokenSilently
+            getTokenSilently: props.getTokenSilently,
+            updatePoiList: props.updatePoiList,
         };
         this.showDeleteButton = this.showDeleteButton.bind(this);
+        this.handleDeletePoi = this.handleDeletePoi.bind(this);
     }
 
 
@@ -68,8 +69,8 @@ class LeafletMapComponent extends Component {
                 <Button
                     variant="contained"
                     color="secondary"
-                    startIcon={<DeleteIcon />}
-                    onClick={this.handleDeletePoi(poiKey,this.props.getTokenSilently,this.props.loginWithRedirect)}
+                    key={poiKey}
+                    onClick={async() => this.handleDeletePoi(poiKey)}
                 >
                     Delete
                 </Button>
@@ -77,8 +78,12 @@ class LeafletMapComponent extends Component {
         }
     }
 
-    handleDeletePoi = (poiKey, getTokenSilently, loginWithRedirect) => {
-        deletePoi(poiKey, getTokenSilently, loginWithRedirect)
+    async handleDeletePoi(poiKey) {
+        if (!window.confirm('Do you really want to delete this?'))
+            return;
+            
+        await deletePoi(poiKey, this.state.getTokenSilently, this.state.loginWithRedirect);
+        await this.state.updatePoiList();
     }
 
 
@@ -99,7 +104,6 @@ class LeafletMapComponent extends Component {
                             description={poi.description}
                         >
                             <Popup className="request-popup">
-                            <div>
                                 <h1>
                                     {poi.name}
                                 </h1>
@@ -107,20 +111,10 @@ class LeafletMapComponent extends Component {
                                     {poi.description}
                                 </p>
                                 {this.showDeleteButton(poi.creatorId, this.state.userId, poi.key)} 
-                            </div>
                             </Popup>
                         </Marker>
                     ))
                     }
-                    <Marker position = {position} >
-                        <Popup className="request-popup">
-                            <div>
-                                <h1>
-                                    You&apos;re here
-                                </h1>
-                            </div>
-                        </Popup>
-                    </Marker>
                 </Map>
             </div>
         )
@@ -129,6 +123,10 @@ class LeafletMapComponent extends Component {
 
 LeafletMapComponent.propTypes = {
     pois: PropTypes.array.isRequired,
+    userId: PropTypes.string,
+    loginWithRedirect: PropTypes.func.isRequired,
+    getTokenSilently: PropTypes.func.isRequired,
+    updatePoiList: PropTypes.func.isRequired,
 }
 
 export default LeafletMapComponent;
