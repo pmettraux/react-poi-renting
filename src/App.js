@@ -38,7 +38,6 @@ function App() {
     });
     setPois(pois);
     setFilteredPois(pois);
-    console.log(pois);
   }
 
   const getListCategories = async() => {
