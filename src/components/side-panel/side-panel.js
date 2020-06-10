@@ -93,9 +93,11 @@ class SidePanelComponent extends React.Component {
   render() {
     return (
       <div className="side-panel">
+
         <div className={`button-toggle${this.state.isOpen ? ' open' : ''}`} onClick={this.toggleDrawer}>
           <NavigateNext className="toggle-text" />
         </div>
+
         <SwipeableDrawer
           anchor="left"
           open={this.state.isOpen}
@@ -104,11 +106,13 @@ class SidePanelComponent extends React.Component {
         >
           <div className="side-panel-content">
             <Container fixed>
+
               <h2>Filter rentable places</h2>
 
               <Typography id="price-range-slider" gutterBottom>
-                Price range (CHF)
+                Price range :
               </Typography>
+
               <Slider
                 value={this.state.prices}
                 onChange={this.handleChange}
@@ -118,12 +122,13 @@ class SidePanelComponent extends React.Component {
                 aria-labelledby="price-range-slider"
                 getAriaValueText={this.valuetext}
               />
+
               <Typography id="price-range-slider-values" gutterBottom>
                 min: <strong>{this.state.prices[0].toLocaleString()} CHF</strong><br/>
                 max: <strong>{this.state.prices[1].toLocaleString()} CHF</strong>
               </Typography>
+
             </Container>
-          
           </div>
         </SwipeableDrawer>
       </div>
