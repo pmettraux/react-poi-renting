@@ -57,7 +57,12 @@ function App() {
   }, [loading])
 
   if (loading) {
-    return <Loading />;
+    return (
+      <div className="App">
+        <MainHeader />
+        <Loading />
+      </div>
+    );
   }
 
   return (
