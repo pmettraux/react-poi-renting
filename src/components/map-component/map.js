@@ -121,7 +121,7 @@ class LeafletMapComponent extends Component {
                         className="leaflet-search" 
                         position="topright"
                         inputPlaceholder="Search for a location..."
-                        zoom={12}
+                        zoom={this.state.DEFAULT_ZOOM}
                         showPopup={false}
                         showMarker={false}
                         openSearchOnLoad={true}
