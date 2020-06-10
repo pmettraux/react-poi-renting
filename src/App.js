@@ -59,11 +59,6 @@ function App() {
   if (loading) {
     return (
       <div className="App">
-        <MainHeader 
-          logout={logout} 
-          isAuthenticated={isAuthenticated} 
-          loginWithRedirect={loginWithRedirect}
-        />
         <Loading />
       </div>
     );
