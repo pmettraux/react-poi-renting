@@ -59,7 +59,11 @@ function App() {
   if (loading) {
     return (
       <div className="App">
-        <MainHeader />
+        <MainHeader 
+          logout={logout} 
+          isAuthenticated={isAuthenticated} 
+          loginWithRedirect={loginWithRedirect}
+        />
         <Loading />
       </div>
     );
@@ -70,7 +74,7 @@ function App() {
       <MainHeader 
         logout={logout} 
         isAuthenticated={isAuthenticated} 
-        loginWithRedirect={loginWithRedirect} 
+        loginWithRedirect={loginWithRedirect}
       />
       <LeafletMapComponent 
         pois={filteredPois}
