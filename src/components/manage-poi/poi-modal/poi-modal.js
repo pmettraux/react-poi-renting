@@ -50,7 +50,7 @@ function FormDialog(props) {
 
     const { loginWithRedirect, getTokenSilently } = useAuth0();
 
-    const { updatePoiList } = props
+    const { updatePoiList, updateCategoryList } = props
 
     useEffect(() => {
         if ('geolocation' in navigator) {
@@ -146,6 +146,7 @@ function FormDialog(props) {
         );
         setOpen(false);
         setForm(emptyForm);
+        await updateCategoryList();
         await updatePoiList();
     }
 
@@ -274,6 +275,7 @@ function FormDialog(props) {
 
 FormDialog.propTypes = {
     updatePoiList: PropTypes.func.isRequired,
+    updateCategoryList: PropTypes.func.isRequired,
     position: PropTypes.object,
 }
 

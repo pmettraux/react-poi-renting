@@ -40,7 +40,6 @@ function App() {
   const getListCategories = async() => {
     const results = await getCategories(getTokenSilently, loginWithRedirect);
     setCategories(results.data);
-    console.log('categories', categories);
   }
 
   useEffect(() => {
@@ -71,8 +70,11 @@ function App() {
         loginWithRedirect={loginWithRedirect} 
         getTokenSilently={getTokenSilently}
         updatePoiList={getListPois}
+        updateCategoryList={getListCategories}
       />
-      <SidePanelComponent />
+      <SidePanelComponent 
+        categories={categories}
+      />
     </div>
   );
 }
