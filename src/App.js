@@ -10,6 +10,7 @@ import { getPois, getCategories } from './shared/api.service';
 
 function App() {
   const [pois, setPois] = useState([]);
+  const [filteredPois, setFilteredPois] = useState([]);
   const [categories, setCategories] = useState([]);
   const {
     loading,
@@ -31,16 +32,17 @@ function App() {
         },
         name: poi.name,
         description: poi.description,
-        creatorId:  poi.Creator.id
+        creatorId:  poi.Creator.id,
+        categories: poi.Categories,
       }
     });
     setPois(pois);
+    setFilteredPois(pois);
   }
 
   const getListCategories = async() => {
     const results = await getCategories(getTokenSilently, loginWithRedirect);
     setCategories(results.data);
-    console.log('categories', categories);
   }
 
   useEffect(() => {
@@ -66,13 +68,18 @@ function App() {
         loginWithRedirect={loginWithRedirect} 
       />
       <LeafletMapComponent 
-        pois={pois}
+        pois={filteredPois}
         userId={user ? user.sub : undefined}
         loginWithRedirect={loginWithRedirect} 
         getTokenSilently={getTokenSilently}
         updatePoiList={getListPois}
+        updateCategoryList={getListCategories}
       />
-      <SidePanelComponent />
+      <SidePanelComponent 
+        categories={categories}
+        setFilteredPois={setFilteredPois}
+        pois={pois}
+      />
     </div>
   );
 }

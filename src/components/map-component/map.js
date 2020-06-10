@@ -34,6 +34,7 @@ class LeafletMapComponent extends Component {
             loginWithRedirect: props.loginWithRedirect,
             getTokenSilently: props.getTokenSilently,
             updatePoiList: props.updatePoiList,
+            updateCategoryList: props.updateCategoryList,
             clickedPosition: undefined,
         };
         this.showDeleteButton = this.showDeleteButton.bind(this);
@@ -137,6 +138,7 @@ class LeafletMapComponent extends Component {
                 </Map>
                 <FormDialog
                     updatePoiList={this.state.updatePoiList}
+                    updateCategoryList={this.state.updateCategoryList}
                     position={this.state.clickedPosition}
                 />
             </div>
@@ -150,6 +152,7 @@ LeafletMapComponent.propTypes = {
     loginWithRedirect: PropTypes.func.isRequired,
     getTokenSilently: PropTypes.func.isRequired,
     updatePoiList: PropTypes.func.isRequired,
+    updateCategoryList: PropTypes.func.isRequired,
 }
 
 export default LeafletMapComponent;
