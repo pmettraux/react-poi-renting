@@ -17,7 +17,7 @@ class SidePanelComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-      isOpen: true,
+      isOpen: false,
       prices: [0, 0],
       limitsPrice: [0, 0],
       categories: props.categories,
@@ -119,8 +119,8 @@ class SidePanelComponent extends React.Component {
                 getAriaValueText={this.valuetext}
               />
               <Typography id="price-range-slider-values" gutterBottom>
-                min: <strong>{this.state.prices[0]}CHF</strong><br/>
-                max: <strong>{this.state.prices[1]}CHF</strong>
+                min: <strong>{this.state.prices[0].toLocaleString()} CHF</strong><br/>
+                max: <strong>{this.state.prices[1].toLocaleString()} CHF</strong>
               </Typography>
             </Container>
           
