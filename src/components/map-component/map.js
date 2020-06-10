@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import { deletePoi } from '../../shared/api.service';
 import FormDialog from '../manage-poi/poi-modal/poi-modal';
+import ReactLeafletSearch from "react-leaflet-search";
 
 // Correction of the invisble icon
 delete L.Icon.Default.prototype._getIconUrl;
@@ -115,6 +116,14 @@ class LeafletMapComponent extends Component {
                     <TileLayer
                         attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
+                    <ReactLeafletSearch 
+                        className="leaflet-search" 
+                        position="topright"
+                        inputPlaceholder="Search for a location..."
+                        showPopup={false}
+                        showMarker={false}
+                        openSearchOnLoad={true}
                     />
                     {this.state.pois.map((poi) => (
                         <Marker
