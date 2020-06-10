@@ -48,7 +48,7 @@ class MainHeader extends React.Component {
                         <Typography variant="h6" className="title">
                             APP TITLE
                         </Typography>
-                        <div className="search-box">
+                        {/* <div className="search-box">
                             <div className="search-icon">
                                 <SearchIcon />
                             </div>
@@ -62,7 +62,7 @@ class MainHeader extends React.Component {
                                 onChange={this.searchTextChanged}
                                 onKeyDown={this.search}
                             />
-                        </div>
+                        </div> */}
                         {this.state.isAuthenticated && (
                             <Button
                                 className="logout-button"
