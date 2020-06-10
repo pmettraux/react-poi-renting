@@ -21,11 +21,14 @@ class SidePanelComponent extends React.Component {
       prices: [0, 0],
       limitsPrice: [0, 0],
       categories: props.categories,
+      pois: props.pois,
+      setFilteredPois: props.setFilteredPois,
     };
 
     this.toggleDrawer = this.toggleDrawer.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.preparePriceFilters = this.preparePriceFilters.bind(this);
+    this.filterByPrice = this.filterByPrice.bind(this);
   }
 
   preparePriceFilters(categories) {
@@ -55,12 +58,35 @@ class SidePanelComponent extends React.Component {
 
   handleChange(e, newValue) {
     this.setState({ prices: newValue });
+    this.filterByPrice(newValue);
+  }
+
+  filterByPrice(priceFilter) {
+    const newPoisList = [];
+    this.state.pois.forEach(poi => {
+      if (poi.categories.length) {
+        poi.categories.forEach(category => {
+          const val = category.name.match(/^price_(\d+)$/);
+          if (val !== null && val[1] !== undefined) {
+            // check that we are whitin range
+            if (val[1] >= priceFilter[0] && val[1] <= priceFilter[1]) {
+              newPoisList.push(poi);
+            }
+          }
+        })
+      }
+    });
+    this.state.setFilteredPois(newPoisList);
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.categories !== prevProps.categories) {
       this.setState({ categories: this.props.categories });
       this.preparePriceFilters(this.props.categories);
+    }
+    if (this.props.pois !== prevProps.pois) {
+      this.setState({ pois: this.props.pois });
+      // this.filterByPrice(this.state.prices);
     }
   }
 
@@ -107,6 +133,8 @@ class SidePanelComponent extends React.Component {
 
 SidePanelComponent.propTypes = {
   categories: PropTypes.array.isRequired,
+  pois: PropTypes.array.isRequired,
+  setFilteredPois: PropTypes.func.isRequired,
 }
 
 export default SidePanelComponent;
