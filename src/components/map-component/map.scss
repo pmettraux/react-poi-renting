@@ -30,3 +30,13 @@
     display: flex;
     align-items: center;
 }
+.search-control-info {
+    padding: 15px !important;
+    text-align: left !important;
+    --background-color-candidate: #e0e4ff;
+    --background-color-hover: #b6c1ff;
+    --background-color-active: #98a7f7;
+}
+.search-input {
+    padding-left: 15px !important;
+}

@@ -2,9 +2,7 @@ import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
 import Button from '@material-ui/core/Button';
-import SearchIcon from '@material-ui/icons/Search';
 import PropTypes from 'prop-types';
 import './main-header.scss';
 
@@ -48,21 +46,6 @@ class MainHeader extends React.Component {
                         <Typography variant="h6" className="title">
                             APP TITLE
                         </Typography>
-                        {/* <div className="search-box">
-                            <div className="search-icon">
-                                <SearchIcon />
-                            </div>
-                            <InputBase
-                                placeholder="Search…"
-                                classes={{
-                                    root: "input-root",
-                                    input: "input-input"
-                                }}
-                                inputProps={{ 'aria-label': 'search' }}
-                                onChange={this.searchTextChanged}
-                                onKeyDown={this.search}
-                            />
-                        </div> */}
                         {this.state.isAuthenticated && (
                             <Button
                                 className="logout-button"
