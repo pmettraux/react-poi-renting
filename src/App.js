@@ -34,6 +34,8 @@ function App() {
         description: poi.description,
         creatorId:  poi.Creator.id,
         categories: poi.Categories,
+        file: poi.File,
+        status: poi.Status,
         image: poi.image
       }
     });

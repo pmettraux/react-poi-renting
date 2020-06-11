@@ -142,11 +142,13 @@ class LeafletMapComponent extends Component {
                                 <p>
                                     {poi.description}
                                 </p>
-                                <Gallery 
-                                    fileIds={poi.image ? poi.image.split(';') : []}
-                                    loginWithRedirect={this.state.loginWithRedirect}
-                                    getTokenSilently={this.state.getTokenSilently}
-                                ></Gallery>
+                                {poi.image !== null && 
+                                    <Gallery 
+                                        fileIds={poi.image ? poi.image.split(';') : []}
+                                        loginWithRedirect={this.state.loginWithRedirect}
+                                        getTokenSilently={this.state.getTokenSilently}
+                                    ></Gallery>
+                                }
                                 {this.showDeleteButton(poi.creatorId, this.state.userId, poi.key)}
                             </Popup>
                         </Marker>

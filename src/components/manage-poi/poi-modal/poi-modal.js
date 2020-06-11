@@ -18,6 +18,7 @@ import {
     RadioGroup,
     FormControlLabel,
     Radio,
+    Switch,
 } from '@material-ui/core';
 import CloudUpload from '@material-ui/icons/CloudUpload';
 import {
@@ -37,6 +38,7 @@ function FormDialog(props) {
         homeType: 'appartment',
         shareType: 'shared',
         gpxFile: '',
+        currentlyAvailable: true,
         images: [],
     };
     const [open, setOpen] = useState(false);
@@ -87,7 +89,7 @@ function FormDialog(props) {
     const checkFormHasEmptyField = () => {
         let isEmpty = false;
         Object.keys(form).forEach(key => {
-            if (form[key] === ''){
+            if (errors[key] !== undefined && form[key] === ''){
                 isEmpty = true;
             }
         });
@@ -143,7 +145,11 @@ function FormDialog(props) {
     }
 
     const handleChange = (e) => {
-        const {id, value} = e.target
+        let {id, value, checked} = e.target
+
+        if (id === 'currentlyAvailable') {
+            value = checked;
+        }
 
         handleFieldValidation(id, value);
         
@@ -174,12 +180,11 @@ function FormDialog(props) {
     }
 
     const handleFile = (file => {
-        setForm({...form, 'gpxFile': file})
+        setForm({...form, gpxFile: file});
     })
 
     const handleImage = (files => {
-        files = Array.from(files)
-        setForm({...form, 'images': files})
+        setForm({...form, images: Array.from(files)});
     })
 
     return (
@@ -279,19 +284,39 @@ function FormDialog(props) {
                             </Grid>
                         </Grid>
 
-                        <TextField
-                            error={!!errors.price}
-                            helperText={errors.price}
-                            autoFocus
-                            margin="dense"
-                            id="price"
-                            label="Price (CHF)"
-                            type="text"
-                            fullWidth
-                            variant="outlined"
-                            value={form.price}
-                            onChange={handleChange}
-                        />
+                        <Grid container spacing={3}>
+                            <Grid item xs={6}>
+                                <TextField
+                                    error={!!errors.price}
+                                    helperText={errors.price}
+                                    autoFocus
+                                    margin="dense"
+                                    id="price"
+                                    label="Price (CHF)"
+                                    type="text"
+                                    fullWidth
+                                    variant="outlined"
+                                    value={form.price}
+                                    onChange={handleChange}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={form.currentlyAvailable}
+                                            onChange={handleChange}
+                                            color="primary"
+                                            id="currentlyAvailable"
+                                            name="currentlyAvailable"
+                                            inputProps={{ 'aria-label': 'primary checkbox' }}
+                                        />
+                                    }
+                                    label="Currently Available"
+                                />
+                            </Grid>
+                        </Grid>
+                        
                         <div className="upload-poi-picture">
                             <Button component="label">
                                 <CloudUpload color="primary"></CloudUpload>

@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ImageGallery from './image-gallery/image-gallery';
+import { getFile, fileToImage } from '../../shared/api.service';
 import './gallery.scss';
+import ImageGallery from 'react-image-gallery';
 
 class GalleryComponent extends React.Component {
   constructor(props) {
@@ -10,17 +11,27 @@ class GalleryComponent extends React.Component {
       fileIds: props.fileIds,
       loginWithRedirect: props.loginWithRedirect,
       getTokenSilently: props.getTokenSilently,
+      images: [],
+    }
+  }
+
+  async componentDidMount() {
+    for (let i = 0; i < this.state.fileIds.length; i++) {
+        const fileData = await getFile(this.state.fileIds[i], this.state.getTokenSilently, this.state.loginWithRedirect);
+        // get the proper path
+        let filePath = fileData.data.path.split('/');
+        filePath = filePath[filePath.length - 1];
+        const imageData = await fileToImage(filePath, this.state.getTokenSilently, this.state.loginWithRedirect);
+        this.state.images.push({
+          original: `data:image/jpeg;base64,${imageData}`,
+        });
     }
   }
 
   render() {
     return (
-      <div>
-        <ImageGallery
-          fileIds={this.state.fileIds}
-          loginWithRedirect={this.state.loginWithRedirect}
-          getTokenSilently={this.state.getTokenSilently}
-        ></ImageGallery>
+      <div className="gallery-container">
+        <ImageGallery showThumbnails={false} items={this.state.images} />
       </div>
     );
   }
