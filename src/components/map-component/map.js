@@ -6,8 +6,9 @@ import L from 'leaflet';
 import './map.scss';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
-import { deletePoi, getPoiFiles } from '../../shared/api.service';
+import { deletePoi } from '../../shared/api.service';
 import FormDialog from '../manage-poi/poi-modal/poi-modal';
+import Gallery from '../gallery/gallery';
 import ReactLeafletSearch from "react-leaflet-search";
 
 // Correction of the invisble icon
@@ -99,28 +100,7 @@ class LeafletMapComponent extends Component {
     }
     handleClickRelease() {
         clearTimeout(this.buttonPressTimer);
-    }
-
-    async handleGetPoiFiles(filesString) {
-        const files = await getPoiFiles(filesString, this.state.getTokenSilently, this.state.loginWithRedirect);
-        files.forEach(f => {
-            console.log(f);
-        });
-        // this.handleGetPoiFilesAsync(filesString).then(response => {
-            
-        //    response.forEach(file => {
-        //     return file.status
-        //     });
-        // });
-       
-         
-    }
-
-    // async handleGetPoiFilesAsync(filesString) {
-    //     return await getPoiFiles(filesString, this.state.getTokenSilently, this.state.loginWithRedirect);
-    // }
-
-    
+    }    
 
     render() {
         const position = [this.state.lat, this.state.lng]
@@ -150,7 +130,6 @@ class LeafletMapComponent extends Component {
                     />
                     {this.state.pois.map((poi) => (
                         <Marker
-                            onclick={async() => this.handleGetPoiFiles(poi.image)}
                             key={poi.key}
                             position={poi.position}
                             name={poi.name}
@@ -163,7 +142,11 @@ class LeafletMapComponent extends Component {
                                 <p>
                                     {poi.description}
                                 </p>
-                                {/* {this.handleGetPoiFiles(poi.image)} */}
+                                <Gallery 
+                                    fileIds={poi.image ? poi.image.split(';') : []}
+                                    loginWithRedirect={this.state.loginWithRedirect}
+                                    getTokenSilently={this.state.getTokenSilently}
+                                ></Gallery>
                                 {this.showDeleteButton(poi.creatorId, this.state.userId, poi.key)}
                             </Popup>
                         </Marker>

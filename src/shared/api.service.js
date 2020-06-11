@@ -4,8 +4,16 @@ async function getHeaders(getTokenSilently) {
   let token = await getTokenSilently();
 
   return {
-    'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+    Authorization: `Bearer ${token}`,
+  }
+}
+
+async function getImageHeaders(getTokenSilently) {
+  let token = await getTokenSilently();
+
+  return {
+    'Access-Control-Allow-Origin': '*', 
+    Authorization: `Bearer ${token}`,
   }
 }
 
@@ -23,8 +31,23 @@ async function apiCall(callFunc, loginWithRedirect) {
     return await callFunc;
   } catch(e) {
     console.error('apiCall error', e);
-   // loginWithRedirect();
+    loginWithRedirect();
   }
+}
+
+export async function fileToImage(filePath, getTokenSilently, loginWithRedirect) {
+  let headers = await getImageHeaders(getTokenSilently);
+
+  const imageData = await apiCall(
+    axios.get(`${process.env.REACT_APP_SERVER_URL}/file/download/${filePath}`,
+      { 
+        headers: headers, 
+        responseType: 'arraybuffer'
+      }
+    ),
+    loginWithRedirect)
+    
+  return Buffer.from(imageData.data, 'binary').toString('base64');
 }
 
 
@@ -51,16 +74,14 @@ export async function createPoi(data, getTokenSilently, loginWithRedirect) {
     createdGpxFile = createdGpxFile.data
   }
 
-
-  data.image = ''
-  if (data.images.length > 0){
-    for (let i = 0; i < data.images.length; i++) {
-      let formData = new FormData();
-      formData.append('file', data.images[i]); 
-      const image = await uploadFile(formData, getTokenSilently, loginWithRedirect);
-      data.image = data.image.concat(image.data.id + ';')
-    }
+  data.image = [];
+  for (let i = 0; i < data.images.length; i++) {
+    let formData = new FormData();
+    formData.append('file', data.images[i]); 
+    const image = await uploadFile(formData, getTokenSilently, loginWithRedirect);
+    data.image.push(image.data.id);
   }
+  data.image = data.image.join(';');
 
   // for the price we will check if we have a category named `price_${data.price}`
   // if not we will create it and assign it to the poi
@@ -93,6 +114,7 @@ export async function createPoi(data, getTokenSilently, loginWithRedirect) {
   delete data.price;
   delete data.homeType;
   delete data.shareType;
+  delete data.images;
 
   const poi = await apiCall(
     axios.post(`${process.env.REACT_APP_SERVER_URL}/poi`,
@@ -101,14 +123,14 @@ export async function createPoi(data, getTokenSilently, loginWithRedirect) {
     ),
     loginWithRedirect);
 
-
-  await attachFileToPoi(createdGpxFile.id, poi.data.id, getTokenSilently, loginWithRedirect)
-
-  return await attachCategoriesToPoi([
-    categoryPrice.id,
-    categoryHomeType.id,
-    categoryShareType.id,
-  ], poi.data.id, getTokenSilently, loginWithRedirect);
+  return await Promise.all([
+    await attachFileToPoi(createdGpxFile.id, poi.data.id, getTokenSilently, loginWithRedirect),
+    await attachCategoriesToPoi([
+      categoryPrice.id,
+      categoryHomeType.id,
+      categoryShareType.id,
+    ], poi.data.id, getTokenSilently, loginWithRedirect),
+  ]);
 }
 
 
@@ -116,8 +138,8 @@ export async function attachFileToPoi(gpxFileId, poiId, getTokenSilently, loginW
   let headers = await getHeaders(getTokenSilently);
 
   return await apiCall(
-    axios.patch(`${process.env.REACT_APP_SERVER_URL}/poi/${poiId}/file/`,
-    gpxFileId, 
+      axios.patch(`${process.env.REACT_APP_SERVER_URL}/poi/${poiId}/file/`,
+      gpxFileId, 
       { headers: headers }
     ),
     loginWithRedirect);
@@ -127,7 +149,7 @@ export async function attachCategoriesToPoi(categoriesId, poiId, getTokenSilentl
   let headers = await getHeaders(getTokenSilently);
 
   return await apiCall(
-    axios.patch(`${process.env.REACT_APP_SERVER_URL}/poi/${poiId}/category/`,
+      axios.patch(`${process.env.REACT_APP_SERVER_URL}/poi/${poiId}/category/`,
       categoriesId, 
       { headers: headers }
     ),
@@ -138,7 +160,7 @@ export async function deletePoi(key, getTokenSilently, loginWithRedirect) {
   let headers = await getHeaders(getTokenSilently);
 
   return await apiCall(
-    axios.delete(`${process.env.REACT_APP_SERVER_URL}/poi/${key}`,
+      axios.delete(`${process.env.REACT_APP_SERVER_URL}/poi/${key}`,
       { headers: headers }
     ),
     loginWithRedirect);
@@ -148,30 +170,21 @@ export async function getPois(getTokenSilently, loginWithRedirect) {
   let headers = await getHeaders(getTokenSilently);
 
   return await apiCall(
-    axios.get(`${process.env.REACT_APP_SERVER_URL}/poi`,
+      axios.get(`${process.env.REACT_APP_SERVER_URL}/poi`,
       { headers: headers }
     ),
     loginWithRedirect);
 }
 
-export async function getPoiFiles(fileIds, getTokenSilently, loginWithRedirect) {
+export async function getFile(fileId, getTokenSilently, loginWithRedirect) {
   let headers = await getHeaders(getTokenSilently);
-  let imageUrls = [];
 
-  fileIds = fileIds ? fileIds.split(';') : [];
-
-  fileIds.forEach(async(id) => {
-    if (!isNaN(id) && id !== ''){
-
-      imageUrls.push(await apiCall(
-        axios.get(`${process.env.REACT_APP_SERVER_URL}/file/${id}`,
-          { headers: headers }
-      ),
-      loginWithRedirect))     
-    }
-  });
-  
-  return imageUrls;
+  return await apiCall(
+    axios.get(`${process.env.REACT_APP_SERVER_URL}/file/${fileId}`,
+      { headers: headers }
+    ),
+    loginWithRedirect
+  );
 }
 
 export async function getCategories(getTokenSilently, loginWithRedirect) {
