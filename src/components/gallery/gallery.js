@@ -16,16 +16,20 @@ class GalleryComponent extends React.Component {
   }
 
   async componentDidMount() {
+    const images = [];
     for (let i = 0; i < this.state.fileIds.length; i++) {
         const fileData = await getFile(this.state.fileIds[i], this.state.getTokenSilently, this.state.loginWithRedirect);
         // get the proper path
         let filePath = fileData.data.path.split('/');
         filePath = filePath[filePath.length - 1];
         const imageData = await fileToImage(filePath, this.state.getTokenSilently, this.state.loginWithRedirect);
-        this.state.images.push({
+        images.push({
           original: `data:image/jpeg;base64,${imageData}`,
         });
     }
+    this.setState({
+      images,
+    });
   }
 
   render() {

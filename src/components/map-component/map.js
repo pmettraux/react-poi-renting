@@ -6,6 +6,10 @@ import L from 'leaflet';
 import './map.scss';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
+import {
+    EventAvailable,
+    EventBusy,
+} from '@material-ui/icons';
 import { deletePoi } from '../../shared/api.service';
 import FormDialog from '../manage-poi/poi-modal/poi-modal';
 import Gallery from '../gallery/gallery';
@@ -136,13 +140,22 @@ class LeafletMapComponent extends Component {
                             description={poi.description}
                         >
                             <Popup className="request-popup">
+                                <div className="availability">
+                                    {poi.status.name === 'status_available' ? 
+                                    <div className="available">
+                                        <EventAvailable /> Place is available right now
+                                    </div> : 
+                                    <div className="busy">
+                                        <EventBusy /> Place is busy at the moment
+                                    </div>}
+                                </div>
                                 <h1>
                                     {poi.name}
                                 </h1>
                                 <p>
                                     {poi.description}
                                 </p>
-                                {poi.image !== null && 
+                                {poi.image !== null && poi.image !== '' && 
                                     <Gallery 
                                         fileIds={poi.image ? poi.image.split(';') : []}
                                         loginWithRedirect={this.state.loginWithRedirect}
