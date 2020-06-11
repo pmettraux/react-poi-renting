@@ -9,18 +9,62 @@ async function getHeaders(getTokenSilently) {
   }
 }
 
+async function getFileHeaders(getTokenSilently) {
+  let token = await getTokenSilently();
+
+  return {
+    'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${token}`,
+  }
+}
+
 async function apiCall(callFunc, loginWithRedirect) {
   try{
     return await callFunc;
   } catch(e) {
     console.error('apiCall error', e);
-    loginWithRedirect();
+    //loginWithRedirect();
   }
+}
 
+
+export async function uploadFile(file, getTokenSilently, loginWithRedirect) {
+  let headers = await getFileHeaders(getTokenSilently);
+
+  return await apiCall(
+    axios.post(`${process.env.REACT_APP_SERVER_URL}/file`,
+      file,
+      { headers: headers }
+    ),
+    loginWithRedirect)
 }
 
 export async function createPoi(data, getTokenSilently, loginWithRedirect) {
   let headers = await getHeaders(getTokenSilently);
+  // let imageKeys = [];
+
+  let createdGpxFile;
+  if (data.gpxFile){
+    let formData = new FormData();
+    formData.append('file', data.gpxFile); 
+    createdGpxFile = await uploadFile(formData, getTokenSilently, loginWithRedirect);
+    createdGpxFile = createdGpxFile.data
+  }
+
+
+
+  // if (data.images.length > 0){
+  //   data.images.forEach(async(element, index) => {
+  //     let formData = new FormData();
+  //     formData.append('file', element); 
+  //     const image = await uploadImage(formData, getTokenSilently, loginWithRedirect);
+  //     imageKeys.push(image.data.id)
+  //     // if(data.images.length === index + 1){
+  //     //   console.log(imageKeys)
+  //     //   await attachImagesToPoi()
+  //     // }
+  //   });
+  // }
 
   // for the price we will check if we have a category named `price_${data.price}`
   // if not we will create it and assign it to the poi
@@ -61,11 +105,26 @@ export async function createPoi(data, getTokenSilently, loginWithRedirect) {
     ),
     loginWithRedirect);
 
+
+  await attachFileToPoi(createdGpxFile.id, poi.data.id, getTokenSilently, loginWithRedirect)
+
   return await attachCategoriesToPoi([
     categoryPrice.id,
     categoryHomeType.id,
     categoryShareType.id,
   ], poi.data.id, getTokenSilently, loginWithRedirect);
+}
+
+
+export async function attachFileToPoi(gpxFileId, poiId, getTokenSilently, loginWithRedirect) {
+  let headers = await getHeaders(getTokenSilently);
+
+  return await apiCall(
+    axios.patch(`${process.env.REACT_APP_SERVER_URL}/poi/${poiId}/file/`,
+    gpxFileId, 
+      { headers: headers }
+    ),
+    loginWithRedirect);
 }
 
 export async function attachCategoriesToPoi(categoriesId, poiId, getTokenSilently, loginWithRedirect) {

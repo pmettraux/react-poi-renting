@@ -19,6 +19,7 @@ import {
     FormControlLabel,
     Radio,
 } from '@material-ui/core';
+import CloudUpload from '@material-ui/icons/CloudUpload';
 import {
     MyLocation,
     Add,
@@ -35,11 +36,13 @@ function FormDialog(props) {
         description: '',
         homeType: 'appartment',
         shareType: 'shared',
+        gpxFile: '',
     };
     const [open, setOpen] = useState(false);
     const [formHasError, setformHasError] = useState(true); // form is empty by default
     const [geolocationAvailable, setGeolocationAvailable] = useState(false);
     const [form, setForm] = useState(emptyForm);
+    let imageList = []
 
     const [errors, setErrors] = useStateWithCallback({
         lat: false,
@@ -91,6 +94,7 @@ function FormDialog(props) {
         return isEmpty;
     }
 
+
     const handleClickOpen = () => {
         setOpen(true);
     }
@@ -98,6 +102,7 @@ function FormDialog(props) {
     const handleClose = () => {
         setOpen(false);
     }
+  
 
     const handleFieldValidation = async(fieldName, value) =>  {
         const minPrice = 0;
@@ -167,6 +172,10 @@ function FormDialog(props) {
             setForm({...form, lat: position.coords.latitude, lng: position.coords.longitude});
         });
     }
+
+    const handleFile = (file => {
+        setForm({...form, 'gpxFile': file})
+    })
 
     return (
         <div>
@@ -281,10 +290,29 @@ function FormDialog(props) {
                         {/* <div className="upload-poi-picture">
                             <Button component="label">
                                 <CloudUpload color="primary"></CloudUpload>
-                                <input type="file" style={{ display: "none" }}/>
+                                <input  
+                                    onChange={ (e) => handleImages(e.target.files) }
+                                    // accept="image/*" 
+                                    type="file" 
+                                    style={{ display: "none" }}
+                                    id='images'
+                                />
                             </Button>
                             <span>Upload a picture of the POI</span>
                         </div> */}
+                        <div className="upload-poi-picture">
+                            <Button component="label">
+                                <CloudUpload color="primary"></CloudUpload>
+                                <input  
+                                    onChange={ (e) => handleFile(e.target.files[0]) }
+                                    // accept="image/*" 
+                                    type="file" 
+                                    style={{ display: "none" }}
+                                    id='images'
+                                />
+                            </Button>
+                            <span>Upload a gpx file</span>
+                        </div> 
                     </DialogContent>
                     <DialogActions>
                     <Button onClick={handleClose} color="primary">

@@ -24,6 +24,7 @@ function App() {
   const getListPois = async() => {
     const results = await getPois(getTokenSilently, loginWithRedirect);
     const pois = results.data.map(poi => {
+      console.log(poi);
       return {
         key: poi.id,
         position: {
