@@ -34,6 +34,7 @@ function App() {
         description: poi.description,
         creatorId:  poi.Creator.id,
         categories: poi.Categories,
+        image: poi.image
       }
     });
     setPois(pois);

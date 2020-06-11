@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import { deletePoi } from '../../shared/api.service';
 import FormDialog from '../manage-poi/poi-modal/poi-modal';
+import Gallery from '../gallery/gallery';
 import ReactLeafletSearch from "react-leaflet-search";
 
 // Correction of the invisble icon
@@ -99,7 +100,7 @@ class LeafletMapComponent extends Component {
     }
     handleClickRelease() {
         clearTimeout(this.buttonPressTimer);
-    }
+    }    
 
     render() {
         const position = [this.state.lat, this.state.lng]
@@ -141,6 +142,11 @@ class LeafletMapComponent extends Component {
                                 <p>
                                     {poi.description}
                                 </p>
+                                <Gallery 
+                                    fileIds={poi.image ? poi.image.split(';') : []}
+                                    loginWithRedirect={this.state.loginWithRedirect}
+                                    getTokenSilently={this.state.getTokenSilently}
+                                ></Gallery>
                                 {this.showDeleteButton(poi.creatorId, this.state.userId, poi.key)}
                             </Popup>
                         </Marker>
