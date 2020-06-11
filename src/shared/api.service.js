@@ -63,6 +63,19 @@ export async function uploadFile(file, getTokenSilently, loginWithRedirect) {
     loginWithRedirect)
 }
 
+async function getStatusAvailability(currentlyAvailable, getTokenSilently, loginWithRedirect) {
+  let statusName = currentlyAvailable ? 'status_available' : 'status_unavailable';
+  // for the status we will check if we have a status named according to the value of statusName
+  // if not we will create it and assign it to the poi
+  let status = await findStatusByName(statusName, getTokenSilently, loginWithRedirect);
+  // if the category does not exist we crate it
+  if (!status) {
+    const createdStatus = await createStatus(statusName, getTokenSilently, loginWithRedirect);
+    status = createdStatus.data;
+  }
+  return status;
+}
+
 export async function createPoi(data, getTokenSilently, loginWithRedirect) {
   let headers = await getHeaders(getTokenSilently);
 
@@ -83,15 +96,7 @@ export async function createPoi(data, getTokenSilently, loginWithRedirect) {
   }
   data.image = data.image.join(';');
 
-  let statusName = data.currentlyAvailable ? 'status_available' : 'status_unavailable';
-  // for the status we will check if we have a status named according to the value of statusName
-  // if not we will create it and assign it to the poi
-  let status = await findStatusByName(statusName, getTokenSilently, loginWithRedirect);
-  // if the category does not exist we crate it
-  if (!status) {
-    const createdStatus = await createStatus(statusName, getTokenSilently, loginWithRedirect);
-    status = createdStatus.data;
-  }
+  const status = await getStatusAvailability(data.currentlyAvailable, getTokenSilently, loginWithRedirect);
 
   // for the price we will check if we have a category named `price_${data.price}`
   // if not we will create it and assign it to the poi
@@ -182,6 +187,11 @@ export async function attachStatusToPoi(statusId, poiId, getTokenSilently, login
       { headers: headers }
     ),
     loginWithRedirect);
+}
+
+export async function toggleAvailability(currentlyAvailable, poiId, getTokenSilently, loginWithRedirect) {
+  const status = await getStatusAvailability(!currentlyAvailable, getTokenSilently, loginWithRedirect);
+  return await attachStatusToPoi(status.id, poiId, getTokenSilently, loginWithRedirect);
 }
 
 export async function deletePoi(key, getTokenSilently, loginWithRedirect) {
