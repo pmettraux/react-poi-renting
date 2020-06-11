@@ -140,7 +140,7 @@ class SidePanelComponent extends React.Component {
         // if need images
         if (passesFilters && 
           toggleValues.onlyWithImages && 
-          poi.images === '') {
+          poi.image === '') {
           passesFilters = false;
         }
 
