@@ -13,6 +13,11 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
+    FormControl,
+    FormLabel,
+    RadioGroup,
+    FormControlLabel,
+    Radio,
 } from '@material-ui/core';
 import {
     MyLocation,
@@ -28,6 +33,8 @@ function FormDialog(props) {
         price: '',
         name: '',
         description: '',
+        homeType: 'appartment',
+        shareType: 'shared',
     };
     const [open, setOpen] = useState(false);
     const [formHasError, setformHasError] = useState(true); // form is empty by default
@@ -40,6 +47,8 @@ function FormDialog(props) {
         price: false,
         name: false,
         description: false,
+        homeType: false,
+        shareType: false,
     }, () => {
         if (!checkFormHasEmptyField() && !checkFormHasError()) {
             setformHasError(false);
@@ -234,6 +243,28 @@ function FormDialog(props) {
                             value={form.description}
                             onChange={handleChange}
                         />
+
+                        <Grid container spacing={3}>
+                            <Grid item xs={6}>
+                                <FormControl component="fieldset">
+                                    <FormLabel component="legend">Home type</FormLabel>
+                                    <RadioGroup aria-label="homeType" name="homeType" value={form.homeType} onChange={handleChange}>
+                                        <FormControlLabel value="appartment" control={<Radio color="primary" id="homeType"/>} label="Appartment" />
+                                        <FormControlLabel value="house" control={<Radio color="primary" id="homeType" />} label="House" />
+                                    </RadioGroup>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <FormControl component="fieldset">
+                                    <FormLabel component="legend">Sharing type</FormLabel>
+                                    <RadioGroup aria-label="shareType" name="shareType" value={form.shareType} onChange={handleChange}>
+                                        <FormControlLabel value="shared" control={<Radio color="primary" id="shareType"/>} label="Shared" />
+                                        <FormControlLabel value="notShared" control={<Radio color="primary" id="shareType" />} label="Not shared" />
+                                    </RadioGroup>
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+
                         <TextField
                             error={!!errors.price}
                             helperText={errors.price}

@@ -27,12 +27,32 @@ export async function createPoi(data, getTokenSilently, loginWithRedirect) {
   let categoryPrice = await findCategoryByName(`price_${data.price}`, getTokenSilently, loginWithRedirect);
   // if the category does not exist we crate it
   if (!categoryPrice) {
-    const createdCategory = await createCategory(`price_${data.price}`, getTokenSilently, loginWithRedirect);
-    categoryPrice = createdCategory.data;
+    const createdCategoryPrice = await createCategory(`price_${data.price}`, getTokenSilently, loginWithRedirect);
+    categoryPrice = createdCategoryPrice.data;
   }
 
-  // remove price for the poi call
+  // for the homeType we will check if we have a category named `homeType_${data.homeType}`
+  // if not we will create it and assign it to the poi
+  let categoryHomeType = await findCategoryByName(`homeType_${data.homeType}`, getTokenSilently, loginWithRedirect);
+  // if the category does not exist we crate it
+  if (!categoryHomeType) {
+    const createdCategoryHomeType = await createCategory(`homeType_${data.homeType}`, getTokenSilently, loginWithRedirect);
+    categoryHomeType = createdCategoryHomeType.data;
+  }
+
+  // for the homeType we will check if we have a category named `shareType_${data.homeType}`
+  // if not we will create it and assign it to the poi
+  let categoryShareType = await findCategoryByName(`shareType_${data.shareType}`, getTokenSilently, loginWithRedirect);
+  // if the category does not exist we crate it
+  if (!categoryShareType) {
+    const createdCategoryShareType = await createCategory(`shareType_${data.shareType}`, getTokenSilently, loginWithRedirect);
+    categoryShareType = createdCategoryShareType.data;
+  }
+
+  // remove categories for the poi call
   delete data.price;
+  delete data.homeType;
+  delete data.shareType;
 
   const poi = await apiCall(
     axios.post(`${process.env.REACT_APP_SERVER_URL}/poi`,
@@ -41,7 +61,11 @@ export async function createPoi(data, getTokenSilently, loginWithRedirect) {
     ),
     loginWithRedirect);
 
-  return await attachCategoriesToPoi([categoryPrice.id], poi.data.id, getTokenSilently, loginWithRedirect);
+  return await attachCategoriesToPoi([
+    categoryPrice.id,
+    categoryHomeType.id,
+    categoryShareType.id,
+  ], poi.data.id, getTokenSilently, loginWithRedirect);
 }
 
 export async function attachCategoriesToPoi(categoriesId, poiId, getTokenSilently, loginWithRedirect) {
