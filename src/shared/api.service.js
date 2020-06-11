@@ -23,7 +23,7 @@ async function apiCall(callFunc, loginWithRedirect) {
     return await callFunc;
   } catch(e) {
     console.error('apiCall error', e);
-    //loginWithRedirect();
+   // loginWithRedirect();
   }
 }
 
@@ -41,7 +41,7 @@ export async function uploadFile(file, getTokenSilently, loginWithRedirect) {
 
 export async function createPoi(data, getTokenSilently, loginWithRedirect) {
   let headers = await getHeaders(getTokenSilently);
-  // let imageKeys = [];
+
 
   let createdGpxFile;
   if (data.gpxFile){
@@ -52,19 +52,15 @@ export async function createPoi(data, getTokenSilently, loginWithRedirect) {
   }
 
 
-
-  // if (data.images.length > 0){
-  //   data.images.forEach(async(element, index) => {
-  //     let formData = new FormData();
-  //     formData.append('file', element); 
-  //     const image = await uploadImage(formData, getTokenSilently, loginWithRedirect);
-  //     imageKeys.push(image.data.id)
-  //     // if(data.images.length === index + 1){
-  //     //   console.log(imageKeys)
-  //     //   await attachImagesToPoi()
-  //     // }
-  //   });
-  // }
+  data.image = ''
+  if (data.images.length > 0){
+    for (let i = 0; i < data.images.length; i++) {
+      let formData = new FormData();
+      formData.append('file', data.images[i]); 
+      const image = await uploadFile(formData, getTokenSilently, loginWithRedirect);
+      data.image = data.image.concat(image.data.id + ';')
+    }
+  }
 
   // for the price we will check if we have a category named `price_${data.price}`
   // if not we will create it and assign it to the poi
@@ -156,6 +152,26 @@ export async function getPois(getTokenSilently, loginWithRedirect) {
       { headers: headers }
     ),
     loginWithRedirect);
+}
+
+export async function getPoiFiles(fileIds, getTokenSilently, loginWithRedirect) {
+  let headers = await getHeaders(getTokenSilently);
+  let imageUrls = [];
+
+  fileIds = fileIds ? fileIds.split(';') : [];
+
+  fileIds.forEach(async(id) => {
+    if (!isNaN(id) && id !== ''){
+
+      imageUrls.push(await apiCall(
+        axios.get(`${process.env.REACT_APP_SERVER_URL}/file/${id}`,
+          { headers: headers }
+      ),
+      loginWithRedirect))     
+    }
+  });
+  
+  return imageUrls;
 }
 
 export async function getCategories(getTokenSilently, loginWithRedirect) {

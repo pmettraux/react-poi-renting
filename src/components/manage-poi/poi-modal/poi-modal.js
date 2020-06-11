@@ -37,6 +37,7 @@ function FormDialog(props) {
         homeType: 'appartment',
         shareType: 'shared',
         gpxFile: '',
+        images: [],
     };
     const [open, setOpen] = useState(false);
     const [formHasError, setformHasError] = useState(true); // form is empty by default
@@ -177,6 +178,11 @@ function FormDialog(props) {
         setForm({...form, 'gpxFile': file})
     })
 
+    const handleImage = (files => {
+        files = Array.from(files)
+        setForm({...form, 'images': files})
+    })
+
     return (
         <div>
             <div className="add-poi-fab" onClick={handleClickOpen}>
@@ -287,25 +293,26 @@ function FormDialog(props) {
                             value={form.price}
                             onChange={handleChange}
                         />
-                        {/* <div className="upload-poi-picture">
+                        <div className="upload-poi-picture">
                             <Button component="label">
                                 <CloudUpload color="primary"></CloudUpload>
                                 <input  
-                                    onChange={ (e) => handleImages(e.target.files) }
-                                    // accept="image/*" 
+                                    onChange={ (e) => handleImage(e.target.files) }
+                                    accept="image/*" 
                                     type="file" 
                                     style={{ display: "none" }}
                                     id='images'
+                                    multiple
                                 />
                             </Button>
                             <span>Upload a picture of the POI</span>
-                        </div> */}
+                        </div>
                         <div className="upload-poi-picture">
                             <Button component="label">
                                 <CloudUpload color="primary"></CloudUpload>
                                 <input  
                                     onChange={ (e) => handleFile(e.target.files[0]) }
-                                    // accept="image/*" 
+                                    accept=".gpx" 
                                     type="file" 
                                     style={{ display: "none" }}
                                     id='images'
