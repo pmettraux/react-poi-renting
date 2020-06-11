@@ -43,7 +43,6 @@ function FormDialog(props) {
     const [formHasError, setformHasError] = useState(true); // form is empty by default
     const [geolocationAvailable, setGeolocationAvailable] = useState(false);
     const [form, setForm] = useState(emptyForm);
-    let imageList = []
 
     const [errors, setErrors] = useStateWithCallback({
         lat: false,

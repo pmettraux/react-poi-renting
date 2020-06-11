@@ -6,7 +6,7 @@ import './gallery.scss';
 class GalleryComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
+    this.state = {
       fileIds: props.fileIds,
       loginWithRedirect: props.loginWithRedirect,
       getTokenSilently: props.getTokenSilently,
@@ -16,14 +16,11 @@ class GalleryComponent extends React.Component {
   render() {
     return (
       <div>
-        {this.state.fileIds.map(fileId => 
-          <ImageGallery 
-            key={fileId} 
-            fileId={fileId}
-            loginWithRedirect={this.state.loginWithRedirect}
-            getTokenSilently={this.state.getTokenSilently}
-          ></ImageGallery>
-        )}
+        <ImageGallery
+          fileIds={this.state.fileIds}
+          loginWithRedirect={this.state.loginWithRedirect}
+          getTokenSilently={this.state.getTokenSilently}
+        ></ImageGallery>
       </div>
     );
   }
