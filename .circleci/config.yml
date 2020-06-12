@@ -33,11 +33,8 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Install sshpass
-          command: sudo apt-get install sshpass
-      - run:
           name: Connect to ssh
-          command: sshpass -p ${SSH_PASSWORD} ssh grp12@vlhprj645docker.hevs.ch
+          command: spawn ssh grp12@vlhprj645docker.hevs.ch && expect "Password:" && send ${SSH_PASSWORD} && interact
       - run:
           name: Go to project folder
           command: cd react-poi-renting
