@@ -6,6 +6,12 @@ import LeafletMapComponent from './components/map-component/map';
 import Loading from './components/loading/loading';
 import { useAuth0 } from './shared/react-auth0-spa';
 import { getPois, getCategories } from './shared/api.service';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 
 
 function App() {
@@ -75,26 +81,50 @@ function App() {
 
   return (
     <div className="App">
+      <Router>
       <MainHeader 
         logout={logout} 
         isAuthenticated={isAuthenticated} 
         loginWithRedirect={loginWithRedirect}
       />
-      <LeafletMapComponent 
-        pois={filteredPois}
-        userId={user ? user.sub : undefined}
-        loginWithRedirect={loginWithRedirect} 
-        getTokenSilently={getTokenSilently}
-        updatePoiList={getListPois}
-        updateCategoryList={getListCategories}
-      />
-      <SidePanelComponent 
-        categories={categories}
-        setFilteredPois={setFilteredPois}
-        pois={pois}
-      />
+        <Switch>
+          <Route path="/about">
+            <About />
+          </Route>
+          <Route path="/">
+          <LeafletMapComponent 
+            pois={filteredPois}
+            userId={user ? user.sub : undefined}
+            loginWithRedirect={loginWithRedirect} 
+            getTokenSilently={getTokenSilently}
+            updatePoiList={getListPois}
+            updateCategoryList={getListCategories}
+          />
+          <SidePanelComponent 
+            categories={categories}
+            setFilteredPois={setFilteredPois}
+            pois={pois}
+          />
+          </Route>
+        </Switch>
+     
+      </Router>
     </div>
   );
 }
+
+
+function Home() {
+  return <h2>Home</h2>;
+}
+
+function About() {
+  return <h2>About</h2>;
+}
+
+function Users() {
+  return <h2>Users</h2>;
+}
+
 
 export default App;

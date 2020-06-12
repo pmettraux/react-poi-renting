@@ -4,6 +4,23 @@
         flex-grow: 1;
     }
 
+    .nav {
+        margin-right: 1em;
+    }
+
+    .inactive {
+        color:#fff;
+        opacity: 0.5;
+        text-decoration: none;
+    }
+    
+    .active {
+        color: #fff;
+        opacity: 1;
+        text-decoration: none;
+      
+      }
+    
     .search-box {
         position: relative;
         margin-left: 0;
