@@ -36,15 +36,30 @@ function App() {
          ******/
         return poi.Status !== null
       }).map(poi => {
-        // get the price
-        const price = parseInt(poi.Categories.map(category => {
-          const match = category.name.match(/^price_(\d+)$/);
+        const matches = poi.Categories.map(category => {
+          const price = category.name.match(/^price_(\d+)$/);
+          const homeType = category.name.match(/^homeType_(\w+)$/);
+          const shareType = category.name.match(/^shareType_(\w+)$/);
           return {
-            match,
+            price,
+            homeType,
+            shareType,
           };
-        }).filter(category => {
-          return category.match !== null;
-        })[0].match[1]);
+        });
+
+        let price, homeType, shareType;
+        matches.forEach(match => {
+          if (match.price !== null) {
+            price = parseInt(match.price[1]);
+          }
+          if (match.homeType !== null) {
+            homeType = match.homeType[1];
+          }
+          if (match.shareType !== null) {
+            shareType = match.shareType[1];
+          }
+        });
+
         return {
           key: poi.id,
           position: {
@@ -58,7 +73,11 @@ function App() {
           file: poi.File,
           status: poi.Status,
           image: poi.image,
+          likes: poi.likes,
+          liked: poi.liked,
           price,
+          homeType,
+          shareType,
         }
     })
     setPois(pois);

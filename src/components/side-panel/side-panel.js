@@ -150,39 +150,25 @@ class SidePanelComponent extends React.Component {
           passesFilters = false;
         }
 
-        poi.categories.forEach(category => {
-          // Price filtering first
-          if (passesFilters) {
-            const valP = category.name.match(/^price_(\d+)$/);
-            if (valP !== null && valP[1] !== undefined){
-              if (valP[1] < priceFilter[0] || 
-                valP[1] > priceFilter[1]) {
-                passesFilters = false;
-              }
-            }
-          }
+        // price filtering
+        if (passesFilters && 
+          (poi.price < priceFilter[0] ||
+            poi.price > priceFilter[1])) {
+          passesFilters = false;
+        }
 
-          // homeType filter
-          if (passesFilters) {
-            const valHT = category.name.match(/^homeType_(\w+)$/);
-            if (valHT !== null && valHT[1] !== undefined){
-              if (!homeTypeFilter[valHT[1]]) {
-                passesFilters = false;
-              }
-            }
-          }
+        // homeType filtering
+        if (passesFilters && 
+          !homeTypeFilter[poi.homeType]) {
+          passesFilters = false;
+        }
 
-          // shareType filter
-          if (passesFilters) {
-            const valST = category.name.match(/^shareType_(\w+)$/);
-            if (valST !== null && valST[1] !== undefined){
-              if (!shareTypeFilter[valST[1]]) {
-                passesFilters = false;
-              }
-            }
-          }
-        });
-
+        // shareType filtering
+        if (passesFilters && 
+          !shareTypeFilter[poi.shareType]) {
+          passesFilters = false;
+        }
+        
         // if passes all filter
         if (passesFilters) {
           newPoisList.push(poi);

@@ -183,6 +183,36 @@ export async function toggleAvailability(currentlyAvailable, poiId, getTokenSile
   return await attachStatusToPoi(status.id, poiId, getTokenSilently, loginWithRedirect);
 }
 
+export async function toggleLike(poi, getTokenSilently, loginWithRedirect) {
+  if (poi.liked) {
+    return await unlikePoi(poi.key, getTokenSilently, loginWithRedirect);
+  } else {
+    return await likePoi(poi.key, getTokenSilently, loginWithRedirect);
+  }
+}
+
+async function unlikePoi(key, getTokenSilently, loginWithRedirect) {
+  let headers = await getHeaders(getTokenSilently);
+
+  return await apiCall(
+      axios.patch(`${process.env.REACT_APP_SERVER_URL}/poi/${key}/unlike`,
+      null,
+      { headers: headers }
+    ),
+    loginWithRedirect);
+}
+
+async function likePoi(key, getTokenSilently, loginWithRedirect) {
+  let headers = await getHeaders(getTokenSilently);
+
+  return await apiCall(
+      axios.patch(`${process.env.REACT_APP_SERVER_URL}/poi/${key}/like`,
+      null,
+      { headers: headers }
+    ),
+    loginWithRedirect);
+}
+
 export async function deletePoi(key, getTokenSilently, loginWithRedirect) {
   let headers = await getHeaders(getTokenSilently);
 
