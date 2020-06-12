@@ -19,6 +19,7 @@ import {
     FormControlLabel,
     Radio,
     Switch,
+    CircularProgress,
 } from '@material-ui/core';
 import CloudUpload from '@material-ui/icons/CloudUpload';
 import {
@@ -45,6 +46,7 @@ function FormDialog(props) {
     const [formHasError, setformHasError] = useState(true); // form is empty by default
     const [geolocationAvailable, setGeolocationAvailable] = useState(false);
     const [form, setForm] = useState(emptyForm);
+    const [loading, setLoading] = useState(false);
 
     const [errors, setErrors] = useStateWithCallback({
         lat: false,
@@ -98,6 +100,7 @@ function FormDialog(props) {
 
 
     const handleClickOpen = () => {
+        setForm(emptyForm);
         setOpen(true);
     }
 
@@ -158,6 +161,7 @@ function FormDialog(props) {
 
     const sendCreatePoi = async(e) => {
         e.preventDefault();
+        setLoading(true);
 
         await createPoi(
             form,
@@ -165,6 +169,7 @@ function FormDialog(props) {
             loginWithRedirect
         );
         setOpen(false);
+        setLoading(false);
         setForm(emptyForm);
         await updateCategoryList();
         await updatePoiList();
@@ -349,13 +354,18 @@ function FormDialog(props) {
                     <Button onClick={handleClose} color="primary">
                         Cancel
                     </Button>
-                    <Button 
-                        type="submit"
-                        color="primary"
-                        disabled={formHasError}
-                    >
-                        Submit
-                    </Button>
+                    <div className="wrapper-button">
+                        <Button 
+                            type="submit"
+                            color="primary"
+                            disabled={formHasError}
+                        >
+                            Submit
+                        </Button>
+                        {loading && <CircularProgress size={24} className="button-progress" />}
+                    </div>
+
+                    
                     </DialogActions>
                 </form>
             </Dialog>
