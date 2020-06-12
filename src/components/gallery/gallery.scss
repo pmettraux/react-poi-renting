@@ -2,12 +2,14 @@
 
 
 .gallery-container{
-    width: 300px;
+    align-content: center;
+    width: 250px;
+    margin-left: 1rem;
 }
 
 .image-gallery-left-nav .image-gallery-svg, .image-gallery-right-nav .image-gallery-svg {
     height: 60px;
-    width: 30px;
+    width: 20px;
 }
 
 .image-gallery-fullscreen-button .image-gallery-svg, .image-gallery-play-button .image-gallery-svg {

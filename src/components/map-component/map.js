@@ -17,6 +17,7 @@ import { deletePoi, toggleAvailability } from '../../shared/api.service';
 import FormDialog from '../manage-poi/poi-modal/poi-modal';
 import Gallery from '../gallery/gallery';
 import ReactLeafletSearch from "react-leaflet-search";
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 
 // Correction of the invisble icon
 delete L.Icon.Default.prototype._getIconUrl;
@@ -196,6 +197,9 @@ class LeafletMapComponent extends Component {
                                     </Grid>
                                     <Grid item xs={4}>
                                         {this.showDeleteButton(poi.creatorId, this.state.userId, poi.key)}
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <ThumbUpIcon></ThumbUpIcon>
                                     </Grid>
                                 </Grid>
                             </Popup>
