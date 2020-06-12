@@ -13,7 +13,7 @@ import {
     EventAvailable,
     EventBusy,
 } from '@material-ui/icons';
-import { deletePoi, toggleAvailability } from '../../shared/api.service';
+import { deletePoi, toggleAvailability, toggleLike } from '../../shared/api.service';
 import FormDialog from '../manage-poi/poi-modal/poi-modal';
 import Gallery from '../gallery/gallery';
 import ReactLeafletSearch from "react-leaflet-search";
@@ -53,6 +53,7 @@ class LeafletMapComponent extends Component {
         this.handleToggleAvailability = this.handleToggleAvailability.bind(this);
         this.handleClickPress = this.handleClickPress.bind(this);
         this.handleClickRelease = this.handleClickRelease.bind(this);
+        this.handleLike = this.handleLike.bind(this);
     }
 
     getCurrentLocation() {
@@ -130,6 +131,11 @@ class LeafletMapComponent extends Component {
     }
     handleClickRelease() {
         clearTimeout(this.buttonPressTimer);
+    }   
+
+    async handleLike(poi) {
+        await toggleLike(poi, this.state.getTokenSilently, this.state.loginWithRedirect);
+        this.state.updatePoiList();
     }    
 
     render() {
@@ -199,7 +205,8 @@ class LeafletMapComponent extends Component {
                                         {this.showDeleteButton(poi.creatorId, this.state.userId, poi.key)}
                                     </Grid>
                                     <Grid item xs={4}>
-                                        <ThumbUpIcon></ThumbUpIcon>
+                                        {poi.likes}
+                                        <ThumbUpIcon onClick={() => this.handleLike(poi)} style={{ cursor: 'pointer', color: poi.liked ? 'blue' : 'grey' }}></ThumbUpIcon>
                                     </Grid>
                                 </Grid>
                             </Popup>
