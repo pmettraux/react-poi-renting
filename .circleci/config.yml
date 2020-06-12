@@ -33,6 +33,9 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Install spwan
+          command: sudo apt-get install spawn
+      - run:
           name: Connect to ssh
           command: spawn ssh grp12@vlhprj645docker.hevs.ch && expect "Password:" && send ${SSH_PASSWORD} && interact
       - run:
