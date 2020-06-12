@@ -4,6 +4,7 @@ async function getHeaders(getTokenSilently) {
   let token = await getTokenSilently();
 
   return {
+    'Content-Type': 'application/json',
     Authorization: `Bearer ${token}`,
   }
 }
@@ -22,7 +23,7 @@ async function getFileHeaders(getTokenSilently) {
 
   return {
     'Content-Type': 'multipart/form-data',
-      Authorization: `Bearer ${token}`,
+    Authorization: `Bearer ${token}`,
   }
 }
 
@@ -62,9 +63,33 @@ export async function uploadFile(file, getTokenSilently, loginWithRedirect) {
     loginWithRedirect)
 }
 
+async function getStatusAvailability(currentlyAvailable, getTokenSilently, loginWithRedirect) {
+  let statusName = currentlyAvailable ? 'status_available' : 'status_unavailable';
+  // for the status we will check if we have a status named according to the value of statusName
+  // if not we will create it and assign it to the poi
+  let status = await findStatusByName(statusName, getTokenSilently, loginWithRedirect);
+  // if the category does not exist we crate it
+  if (!status) {
+    const createdStatus = await createStatus(statusName, getTokenSilently, loginWithRedirect);
+    status = createdStatus.data;
+  }
+  return status;
+}
+
+async function getOrCreateCategory(categoryName, getTokenSilently, loginWithRedirect) {
+  // for the price we will check if we have a category named in the variable categoryName
+  // if not we will create it and assign it to the poi
+  let category = await findCategoryByName(categoryName, getTokenSilently, loginWithRedirect);
+  // if the category does not exist we crate it
+  if (!category) {
+    const createdCategory = await createCategory(categoryName, getTokenSilently, loginWithRedirect);
+    category = createdCategory.data;
+  }
+  return category;
+}
+
 export async function createPoi(data, getTokenSilently, loginWithRedirect) {
   let headers = await getHeaders(getTokenSilently);
-
 
   let createdGpxFile;
   if (data.gpxFile){
@@ -83,38 +108,18 @@ export async function createPoi(data, getTokenSilently, loginWithRedirect) {
   }
   data.image = data.image.join(';');
 
-  // for the price we will check if we have a category named `price_${data.price}`
-  // if not we will create it and assign it to the poi
-  let categoryPrice = await findCategoryByName(`price_${data.price}`, getTokenSilently, loginWithRedirect);
-  // if the category does not exist we crate it
-  if (!categoryPrice) {
-    const createdCategoryPrice = await createCategory(`price_${data.price}`, getTokenSilently, loginWithRedirect);
-    categoryPrice = createdCategoryPrice.data;
-  }
+  const status = await getStatusAvailability(data.currentlyAvailable, getTokenSilently, loginWithRedirect);
 
-  // for the homeType we will check if we have a category named `homeType_${data.homeType}`
-  // if not we will create it and assign it to the poi
-  let categoryHomeType = await findCategoryByName(`homeType_${data.homeType}`, getTokenSilently, loginWithRedirect);
-  // if the category does not exist we crate it
-  if (!categoryHomeType) {
-    const createdCategoryHomeType = await createCategory(`homeType_${data.homeType}`, getTokenSilently, loginWithRedirect);
-    categoryHomeType = createdCategoryHomeType.data;
-  }
+  const categoryPrice = await getOrCreateCategory(`price_${data.price}`, getTokenSilently, loginWithRedirect);
+  const categoryHomeType = await getOrCreateCategory(`homeType_${data.homeType}`, getTokenSilently, loginWithRedirect);
+  const categoryShareType = await getOrCreateCategory(`shareType_${data.shareType}`, getTokenSilently, loginWithRedirect);
 
-  // for the homeType we will check if we have a category named `shareType_${data.homeType}`
-  // if not we will create it and assign it to the poi
-  let categoryShareType = await findCategoryByName(`shareType_${data.shareType}`, getTokenSilently, loginWithRedirect);
-  // if the category does not exist we crate it
-  if (!categoryShareType) {
-    const createdCategoryShareType = await createCategory(`shareType_${data.shareType}`, getTokenSilently, loginWithRedirect);
-    categoryShareType = createdCategoryShareType.data;
-  }
-
-  // remove categories for the poi call
+  // remove categories/status/images for the poi call
   delete data.price;
   delete data.homeType;
   delete data.shareType;
   delete data.images;
+  delete data.currentlyAvailable;
 
   const poi = await apiCall(
     axios.post(`${process.env.REACT_APP_SERVER_URL}/poi`,
@@ -123,13 +128,19 @@ export async function createPoi(data, getTokenSilently, loginWithRedirect) {
     ),
     loginWithRedirect);
 
+  if (data.gpxFile){
+    await attachFileToPoi(createdGpxFile.id, poi.data.id, getTokenSilently, loginWithRedirect);
+  }
+
   return await Promise.all([
-    await attachFileToPoi(createdGpxFile.id, poi.data.id, getTokenSilently, loginWithRedirect),
     await attachCategoriesToPoi([
       categoryPrice.id,
       categoryHomeType.id,
       categoryShareType.id,
     ], poi.data.id, getTokenSilently, loginWithRedirect),
+    await attachStatusToPoi(
+      status.id,
+      poi.data.id, getTokenSilently, loginWithRedirect),
   ]);
 }
 
@@ -154,6 +165,22 @@ export async function attachCategoriesToPoi(categoriesId, poiId, getTokenSilentl
       { headers: headers }
     ),
     loginWithRedirect);
+}
+
+export async function attachStatusToPoi(statusId, poiId, getTokenSilently, loginWithRedirect) {
+  let headers = await getHeaders(getTokenSilently);
+
+  return await apiCall(
+      axios.patch(`${process.env.REACT_APP_SERVER_URL}/poi/${poiId}/status/`,
+      statusId, 
+      { headers: headers }
+    ),
+    loginWithRedirect);
+}
+
+export async function toggleAvailability(currentlyAvailable, poiId, getTokenSilently, loginWithRedirect) {
+  const status = await getStatusAvailability(!currentlyAvailable, getTokenSilently, loginWithRedirect);
+  return await attachStatusToPoi(status.id, poiId, getTokenSilently, loginWithRedirect);
 }
 
 export async function deletePoi(key, getTokenSilently, loginWithRedirect) {
@@ -197,7 +224,17 @@ export async function getCategories(getTokenSilently, loginWithRedirect) {
     loginWithRedirect);
 }
 
-export async function createCategory(name, getTokenSilently, loginWithRedirect) {
+async function getStatuses(getTokenSilently, loginWithRedirect) {
+  let headers = await getHeaders(getTokenSilently);
+
+  return await apiCall(
+    axios.get(`${process.env.REACT_APP_SERVER_URL}/status`,
+      { headers: headers }
+    ),
+    loginWithRedirect);
+}
+
+async function createCategory(name, getTokenSilently, loginWithRedirect) {
   let headers = await getHeaders(getTokenSilently);
 
   return await apiCall(
@@ -208,12 +245,34 @@ export async function createCategory(name, getTokenSilently, loginWithRedirect) 
     loginWithRedirect);
 }
 
-export async function findCategoryByName(categoryName, getTokenSilently, loginWithRedirect) {
+async function createStatus(name, getTokenSilently, loginWithRedirect) {
+  let headers = await getHeaders(getTokenSilently);
+
+  return await apiCall(
+    axios.post(`${process.env.REACT_APP_SERVER_URL}/status`,
+      { name },
+      { headers: headers }
+    ),
+    loginWithRedirect);
+}
+
+async function findCategoryByName(categoryName, getTokenSilently, loginWithRedirect) {
   const categories = await getCategories(getTokenSilently, loginWithRedirect);
 
   for(let i = 0; i < categories.data.length; i++) {
     if (categories.data[i].name === categoryName) {
       return categories.data[i];
+    }
+  }
+  return false;
+}
+
+async function findStatusByName(statusName, getTokenSilently, loginWithRedirect) {
+  const statuses = await getStatuses(getTokenSilently, loginWithRedirect);
+
+  for(let i = 0; i < statuses.data.length; i++) {
+    if (statuses.data[i].name === statusName) {
+      return statuses.data[i];
     }
   }
   return false;

@@ -34,9 +34,17 @@ function App() {
         description: poi.description,
         creatorId:  poi.Creator.id,
         categories: poi.Categories,
+        file: poi.File,
+        status: poi.Status,
         image: poi.image
       }
-    });
+    }).filter(poi => {
+      /*******
+       * As many test were done and some data were already populated
+       * this is here to filter POIS that have the right data in the database
+       ******/
+      return poi.status !== null
+    })
     setPois(pois);
     setFilteredPois(pois);
   }

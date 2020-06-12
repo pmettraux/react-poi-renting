@@ -5,8 +5,15 @@ import {
 import L from 'leaflet';
 import './map.scss';
 import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
-import { deletePoi } from '../../shared/api.service';
+import {
+    Button,
+    Grid
+} from '@material-ui/core';
+import {
+    EventAvailable,
+    EventBusy,
+} from '@material-ui/icons';
+import { deletePoi, toggleAvailability } from '../../shared/api.service';
 import FormDialog from '../manage-poi/poi-modal/poi-modal';
 import Gallery from '../gallery/gallery';
 import ReactLeafletSearch from "react-leaflet-search";
@@ -40,7 +47,9 @@ class LeafletMapComponent extends Component {
             clickedPosition: undefined,
         };
         this.showDeleteButton = this.showDeleteButton.bind(this);
+        this.showToggleAvailabilityButton = this.showToggleAvailabilityButton.bind(this);
         this.handleDeletePoi = this.handleDeletePoi.bind(this);
+        this.handleToggleAvailability = this.handleToggleAvailability.bind(this);
         this.handleClickPress = this.handleClickPress.bind(this);
         this.handleClickRelease = this.handleClickRelease.bind(this);
     }
@@ -85,11 +94,31 @@ class LeafletMapComponent extends Component {
         }
     }
 
+    showToggleAvailabilityButton(creator, user, poi) {
+        if (creator === user) {
+            return (
+                <Button
+                    variant="contained"
+                    color={poi.status.name === 'status_available' ? 'secondary' : 'primary'}
+                    key={poi.key}
+                    onClick={async () => this.handleToggleAvailability(poi.status.name === 'status_available', poi.key)}
+                >
+                    Set as {poi.status.name === 'status_available' ? 'busy' : 'available'}
+                </Button>
+            );
+        }
+    }
+
     async handleDeletePoi(poiKey) {
         if (!window.confirm('Do you really want to delete this?'))
             return;
 
         await deletePoi(poiKey, this.state.getTokenSilently, this.state.loginWithRedirect);
+        await this.state.updatePoiList();
+    }
+
+    async handleToggleAvailability(currentlyAvailable, poiKey) {
+        await toggleAvailability(currentlyAvailable, poiKey, this.state.getTokenSilently, this.state.loginWithRedirect);
         await this.state.updatePoiList();
     }
 
@@ -136,18 +165,36 @@ class LeafletMapComponent extends Component {
                             description={poi.description}
                         >
                             <Popup className="request-popup">
+                                <div className="availability">
+                                    {poi.status.name === 'status_available' ? 
+                                    <div className="available">
+                                        <EventAvailable /> Place is available right now
+                                    </div> : 
+                                    <div className="busy">
+                                        <EventBusy /> Place is busy at the moment
+                                    </div>}
+                                </div>
                                 <h1>
                                     {poi.name}
                                 </h1>
                                 <p>
                                     {poi.description}
                                 </p>
-                                <Gallery 
-                                    fileIds={poi.image ? poi.image.split(';') : []}
-                                    loginWithRedirect={this.state.loginWithRedirect}
-                                    getTokenSilently={this.state.getTokenSilently}
-                                ></Gallery>
-                                {this.showDeleteButton(poi.creatorId, this.state.userId, poi.key)}
+                                {poi.image !== null && poi.image !== '' && 
+                                    <Gallery 
+                                        fileIds={poi.image ? poi.image.split(';') : []}
+                                        loginWithRedirect={this.state.loginWithRedirect}
+                                        getTokenSilently={this.state.getTokenSilently}
+                                    ></Gallery>
+                                }
+                                <Grid container spacing={1}>
+                                    <Grid item xs={8}>
+                                        {this.showToggleAvailabilityButton(poi.creatorId, this.state.userId, poi)}
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        {this.showDeleteButton(poi.creatorId, this.state.userId, poi.key)}
+                                    </Grid>
+                                </Grid>
                             </Popup>
                         </Marker>
                     ))

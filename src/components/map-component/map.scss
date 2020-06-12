@@ -11,7 +11,6 @@
     border-radius: 10px;
     border-style: none;
     .leaflet-popup-content {
-
         h1{
             color: black;
             font-size: 1.3rem; 
@@ -39,4 +38,17 @@
 }
 .search-input {
     padding-left: 15px !important;
+}
+
+.availability {
+    text-transform: uppercase;
+    font-weight: bold;
+
+    .available {
+        color: #28c71a;
+    }
+
+    .busy {
+        color: #d81f0b;
+    }
 }

@@ -8,6 +8,7 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
+  Switch,
 } from '@material-ui/core';
 
 import { 
@@ -34,6 +35,9 @@ class SidePanelComponent extends React.Component {
         shared: true,
         notShared: true,
       },
+      hideUnavailable: false,
+      onlyWithImages: false,
+      onlyWithGPX: false,
     };
 
     this.toggleDrawer = this.toggleDrawer.bind(this);
@@ -41,6 +45,7 @@ class SidePanelComponent extends React.Component {
     this.preparePriceFilters = this.preparePriceFilters.bind(this);
     this.filterPois = this.filterPois.bind(this);
     this.checkBoxHandleChange = this.checkBoxHandleChange.bind(this);
+    this.toggleChange = this.toggleChange.bind(this);
   }
 
   preparePriceFilters(categories) {
@@ -70,32 +75,90 @@ class SidePanelComponent extends React.Component {
 
   handleChange(e, newValue) {
     this.setState({ prices: newValue });
-    this.filterPois(newValue, this.state.selectedHomeType, this.state.selectedShareType);
+    const currentToggleValues = {
+      hideUnavailable: this.state.hideUnavailable,
+      onlyWithImages: this.state.onlyWithImages,
+      onlyWithGPX: this.state.onlyWithGPX,
+    };
+    this.filterPois(newValue, this.state.selectedHomeType, this.state.selectedShareType, currentToggleValues);
+  }
+
+  toggleChange(e) {
+    let {id, checked} = e.target;
+    this.setState({ [id]: checked });
+
+    const currentToggleValues = {
+      hideUnavailable: this.state.hideUnavailable,
+      onlyWithImages: this.state.onlyWithImages,
+      onlyWithGPX: this.state.onlyWithGPX,
+    };
+    currentToggleValues[id] = checked;
+    this.filterPois(
+      this.state.prices,
+      this.state.selectedHomeType,
+      this.state.selectedShareType,
+      currentToggleValues);
   }
 
   checkBoxHandleChange(e) {
     const newValues = this.state[e.target.id];
     newValues[e.target.name] = e.target.checked;
     this.setState({ [e.target.id]: newValues });
+    const currentToggleValues = {
+      hideUnavailable: this.state.hideUnavailable,
+      onlyWithImages: this.state.onlyWithImages,
+      onlyWithGPX: this.state.onlyWithGPX,
+    };
     if (e.target.id === 'selectedHomeType') {
-      this.filterPois(this.state.prices, newValues, this.state.selectedShareType);
+      this.filterPois(this.state.prices, newValues, this.state.selectedShareType, currentToggleValues);
     } else {
-      this.filterPois(this.state.prices, this.state.selectedHomeType, newValues);
+      this.filterPois(this.state.prices, this.state.selectedHomeType, newValues, currentToggleValues);
     }
   }
 
-  filterPois(priceFilter, homeTypeFilter, shareTypeFilter) {
+  filterPois(priceFilter, homeTypeFilter, shareTypeFilter, toggleValues) {
     const newPoisList = [];
     this.state.pois.forEach(poi => {
       if (poi.categories.length) {
         let passesFilters = true;
+
+        /***********
+         * WARNING, because the DB was populated with data missing status
+         * we remove all POI without a status by default
+         ***********/
+        if (poi.status === null) {
+          passesFilters = false;
+        }
+
+        // check the status first
+        if (passesFilters && 
+          toggleValues.hideUnavailable && 
+          poi.status.name === 'status_unavailable') {
+          passesFilters = false;
+        }
+
+        // if need images
+        if (passesFilters && 
+          toggleValues.onlyWithImages && 
+          poi.image === '') {
+          passesFilters = false;
+        }
+
+        if (passesFilters && 
+          toggleValues.onlyWithGPX && 
+          poi.file === null) {
+          passesFilters = false;
+        }
+
         poi.categories.forEach(category => {
           // Price filtering first
-          const valP = category.name.match(/^price_(\d+)$/);
-          if (valP !== null && valP[1] !== undefined){
-            if (valP[1] < priceFilter[0] || 
-              valP[1] > priceFilter[1]) {
-              passesFilters = false;
+          if (passesFilters) {
+            const valP = category.name.match(/^price_(\d+)$/);
+            if (valP !== null && valP[1] !== undefined){
+              if (valP[1] < priceFilter[0] || 
+                valP[1] > priceFilter[1]) {
+                passesFilters = false;
+              }
             }
           }
 
@@ -240,6 +303,51 @@ class SidePanelComponent extends React.Component {
                     label="Not shared"
                   />
                 </FormGroup>
+              </Container>
+
+              <Container maxWidth="sm" className="margin-top-20">
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={this.state.hideUnavailable}
+                      onChange={this.toggleChange}
+                      name="hideUnavailable"
+                      id="hideUnavailable"
+                      color="primary"
+                    />
+                  }
+                  label="Hide unavailable places"
+                />
+              </Container>
+
+              <Container maxWidth="sm" className="margin-top-20">
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={this.state.onlyWithImages}
+                      onChange={this.toggleChange}
+                      name="onlyWithImages"
+                      id="onlyWithImages"
+                      color="primary"
+                    />
+                  }
+                  label="Only place with images"
+                />
+              </Container>
+
+              <Container maxWidth="sm" className="margin-top-20">
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={this.state.onlyWithGPX}
+                      onChange={this.toggleChange}
+                      name="onlyWithGPX"
+                      id="onlyWithGPX"
+                      color="primary"
+                    />
+                  }
+                  label="Only place with GPX"
+                />
               </Container>
 
             </Container>
