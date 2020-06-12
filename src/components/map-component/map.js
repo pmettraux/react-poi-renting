@@ -95,6 +95,7 @@ class LeafletMapComponent extends Component {
         if (creator === user) {
             return (
                 <Button
+                    className="buttonPopup"
                     variant="contained"
                     color="secondary"
                     key={poiKey}
@@ -110,12 +111,13 @@ class LeafletMapComponent extends Component {
         if (creator === user) {
             return (
                 <Button
+                    className="buttonPopup"
                     variant="contained"
                     color={poi.status.name === 'status_available' ? 'secondary' : 'primary'}
                     key={poi.key}
                     onClick={async () => this.handleToggleAvailability(poi.status.name === 'status_available', poi.key)}
                 >
-                    Set as {poi.status.name === 'status_available' ? 'busy' : 'available'}
+                    Set as {poi.status.name === 'status_available' ? 'busy' : 'free'}
                 </Button>
             );
         }
@@ -137,11 +139,11 @@ class LeafletMapComponent extends Component {
     handleClickPress(e) {
         const { lat, lng } = e.latlng;
         this.buttonPressTimer = setTimeout(() => this.setState({ clickedPosition: { lat, lng } }), TIMER);
-        
+
     }
     handleClickRelease() {
         clearTimeout(this.buttonPressTimer);
-    }   
+    }
 
     async handleLike(poi) {
         await toggleLike(poi, this.state.getTokenSilently, this.state.loginWithRedirect);
@@ -191,8 +193,8 @@ class LeafletMapComponent extends Component {
                         attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
-                    <ReactLeafletSearch 
-                        className="leaflet-search" 
+                    <ReactLeafletSearch
+                        className="leaflet-search"
                         position="topright"
                         inputPlaceholder="Search for a location..."
                         zoom={this.state.DEFAULT_ZOOM}
@@ -217,41 +219,50 @@ class LeafletMapComponent extends Component {
                             })}
                         >
                             <Popup className="request-popup">
-                                <div className="availability">
-                                    {poi.status.name === 'status_available' ? 
-                                    <div className="available">
-                                        <EventAvailable /> Place is available right now
-                                    </div> : 
-                                    <div className="busy">
-                                        <EventBusy /> Place is busy at the moment
-                                    </div>}
-                                </div>
                                 <h1>
                                     {poi.name}
                                 </h1>
-                                <h3>
-                                    {poi.price.toLocaleString()} CHF
-                                </h3>
+                                <p className="homeType">
+                                    {poi.homeType}
+                                </p>
+                                <Grid container spacing={0} className="gridContainer1" style={{ textAlign: 'center' }}>
+                                    <Grid item xs={6}>
+                                        {poi.price.toLocaleString()} CHF
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        {poi.shareType}
+                                    </Grid>
+                                </Grid>
                                 <p>
                                     {poi.description}
                                 </p>
-                                {poi.image !== null && poi.image !== '' && 
-                                    <Gallery 
+                                <div className="availability">
+                                    {poi.status.name === 'status_available' ?
+                                        <div className="available">
+                                            <EventAvailable /> Place is available right now
+                                    </div> :
+                                        <div className="busy">
+                                            <EventBusy /> Place is busy at the moment
+                                    </div>}
+                                </div>
+                                {poi.image !== null && poi.image !== '' &&
+                                    <Gallery
                                         fileIds={poi.image ? poi.image.split(';') : []}
                                         loginWithRedirect={this.state.loginWithRedirect}
                                         getTokenSilently={this.state.getTokenSilently}
                                     ></Gallery>
                                 }
-                                <Grid container spacing={1}>
-                                    <Grid item xs={8}>
+                                <Grid container spacing={1} className="gridContainer2">
+                                    <Grid item xs={6}>
                                         {this.showToggleAvailabilityButton(poi.creatorId, this.state.userId, poi)}
                                     </Grid>
-                                    <Grid item xs={4}>
+                                    <Grid item xs={6}>
                                         {this.showDeleteButton(poi.creatorId, this.state.userId, poi.key)}
                                     </Grid>
-                                    <Grid item xs={4}>
-                                        {poi.likes}
-                                        <ThumbUpIcon onClick={() => this.handleLike(poi)} style={{ cursor: 'pointer', color: poi.liked ? 'blue' : 'grey' }}></ThumbUpIcon>
+                                    <Grid item xs={12}>
+                                        <h4>Likes : {poi.likes}
+                                            <ThumbUpIcon onClick={() => this.handleLike(poi)} style={{ float: 'right', cursor: 'pointer', color: poi.liked ? 'blue' : 'grey' }}></ThumbUpIcon>
+                                        </h4>
                                     </Grid>
                                 </Grid>
                             </Popup>
