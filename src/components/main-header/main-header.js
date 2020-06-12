@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import './main-header.scss';
 import { NavLink } from "react-router-dom";
+import { withRouter } from "react-router";
 
 class MainHeader extends React.Component {
 
@@ -55,7 +56,7 @@ class MainHeader extends React.Component {
                         </Typography>
                     </NavLink>
                     <Typography variant="h6" className="title">
-                        APP TITLE
+                        You are now at {this.props.location.pathname}
                     </Typography>
                     {this.state.isAuthenticated && (
                         <Button
@@ -82,6 +83,7 @@ MainHeader.propTypes = {
     logout: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
     loginWithRedirect: PropTypes.func.isRequired,
+    location: PropTypes.object.isRequired,
 }
 
-export default MainHeader;
+export default withRouter(MainHeader);

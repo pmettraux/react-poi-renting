@@ -177,6 +177,9 @@ class LeafletMapComponent extends Component {
                                 <h1>
                                     {poi.name}
                                 </h1>
+                                <h3>
+                                    {poi.price.toLocaleString()} CHF
+                                </h3>
                                 <p>
                                     {poi.description}
                                 </p>
