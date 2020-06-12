@@ -3,6 +3,7 @@ import './App.css';
 import MainHeader from './components/main-header/main-header';
 import SidePanelComponent from './components/side-panel/side-panel';
 import LeafletMapComponent from './components/map-component/map';
+import AboutContent from './components/about/about';
 import Loading from './components/loading/loading';
 import { useAuth0 } from './shared/react-auth0-spa';
 import { getPois, getCategories } from './shared/api.service';
@@ -114,7 +115,7 @@ function App() {
 
 
 function About() {
-  return <h2>About</h2>;
+  return <AboutContent />
 }
 
 
