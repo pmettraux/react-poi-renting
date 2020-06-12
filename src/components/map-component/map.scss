@@ -7,7 +7,7 @@
 }
 .request-popup{
     .leaflet-popup-content-wrapper {
-    width: 400px;
+    width: 350px;
     border-radius: 10px;
     border-style: none;
     display: flex;
@@ -17,6 +17,7 @@
     .leaflet-popup-content {
         h1{
             color: black;
+            font-family: 'Signika';
             font-size: 2rem; 
             font-weight: normal;
             margin-bottom: 0rem;
@@ -24,13 +25,17 @@
             text-transform: uppercase;
         }
         p{
-            color: dimgray;
-            font-size: 1rem;
-            text-align: center;
-            margin: 0;
+            color: gray; 
+            font-family: 'Inder';
+            font-size: 20px; 
+            font-weight: 500; 
+            line-height: 32px; 
+            margin: 0 0 24px;
+            text-align: justify;
         }
         h4{
             font-size: 1rem;
+            font-family: 'Inder';
             display: inline;
             padding: 6px;
             border: none;  
@@ -39,6 +44,7 @@
         }
         .homeType{
             color: black;
+            font-family: 'Inder';
             font-size: 1.15rem;
             text-align: center;
             text-transform: uppercase;
@@ -85,6 +91,7 @@
     padding-top: 10px;
     font-size: 1.15rem;
     text-align: center;
+    font-family: 'Inder';
     text-transform: uppercase;
 }
 .gridContainer2{

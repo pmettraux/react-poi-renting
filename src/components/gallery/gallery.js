@@ -16,6 +16,7 @@ class GalleryComponent extends React.Component {
   }
 
   async componentDidMount() {
+    
     const images = [];
     for (let i = 0; i < this.state.fileIds.length; i++) {
         const fileData = await getFile(this.state.fileIds[i], this.state.getTokenSilently, this.state.loginWithRedirect);
@@ -35,7 +36,8 @@ class GalleryComponent extends React.Component {
   render() {
     return (
       <div className="gallery-container">
-        <ImageGallery showThumbnails={false} items={this.state.images} />
+        <ImageGallery showThumbnails={false} items={this.state.images} showPlayButton={false}>
+        </ImageGallery>
       </div>
     );
   }
