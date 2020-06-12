@@ -18,6 +18,8 @@ function App() {
   const [pois, setPois] = useState([]);
   const [filteredPois, setFilteredPois] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(0);
   const {
     loading,
     logout,
@@ -29,6 +31,8 @@ function App() {
 
   const getListPois = async() => {
     const results = await getPois(getTokenSilently, loginWithRedirect);
+    let minPrice = null;
+    let maxPrice = 0;
     const pois = results.data.filter(poi => {
         /*******
          * As many test were done and some data were already populated
@@ -60,6 +64,14 @@ function App() {
           }
         });
 
+        if (price > maxPrice) {
+          maxPrice = price;
+        }
+
+        if (price < minPrice || minPrice === null) {
+          minPrice = price;
+        }
+
         return {
           key: poi.id,
           position: {
@@ -80,6 +92,8 @@ function App() {
           shareType,
         }
     })
+    setMinPrice(minPrice);
+    setMaxPrice(maxPrice);
     setPois(pois);
     setFilteredPois(pois);
   }
@@ -126,6 +140,8 @@ function App() {
               getTokenSilently={getTokenSilently}
               updatePoiList={getListPois}
               updateCategoryList={getListCategories}
+              minPrice={minPrice}
+              maxPrice={maxPrice}
             />
             <SidePanelComponent 
               categories={categories}

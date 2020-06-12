@@ -41,6 +41,8 @@ class LeafletMapComponent extends Component {
             zoom: DEFAULT_ZOOM,
             pois: props.pois,
             userId: props.userId || undefined,
+            minPrice: props.minPrice,
+            maxPrice: props.maxPrice,
             loginWithRedirect: props.loginWithRedirect,
             getTokenSilently: props.getTokenSilently,
             updatePoiList: props.updatePoiList,
@@ -78,6 +80,12 @@ class LeafletMapComponent extends Component {
     componentDidUpdate(prevProps) {
         if (this.props.pois !== prevProps.pois) {
             this.setState({ pois: this.props.pois });
+        }
+        if (this.props.minPrice !== prevProps.minPrice) {
+            this.setState({ minPrice: this.props.minPrice });
+        }
+        if (this.props.maxPrice !== prevProps.maxPrice) {
+            this.setState({ maxPrice: this.props.maxPrice });
         }
     }
 
@@ -137,6 +145,18 @@ class LeafletMapComponent extends Component {
         await toggleLike(poi, this.state.getTokenSilently, this.state.loginWithRedirect);
         this.state.updatePoiList();
     }    
+    
+    getColorPercentage(price) {
+        const green = 120;
+        const res = 0;
+        const percent = price * 100 / (this.state.maxPrice - this.state.minPrice);
+
+        const a = percent / 100,
+            b = (res - green) * a,
+            c = b + green;
+
+        return `hsl(${c}, 100%, 50%)`;
+    }
 
     render() {
         const position = [this.state.lat, this.state.lng]
@@ -170,6 +190,13 @@ class LeafletMapComponent extends Component {
                             position={poi.position}
                             name={poi.name}
                             description={poi.description}
+                            icon={L.divIcon({
+                                className: "custom-marker-pin",
+                                iconAnchor: [0, 24],
+                                labelAnchor: [-6, 0],
+                                popupAnchor: [0, -36],
+                                html: `<span class="custom-pin" style="background-color:${this.getColorPercentage(poi.price)}"/>`
+                            })}
                         >
                             <Popup className="request-popup">
                                 <div className="availability">
@@ -231,6 +258,8 @@ LeafletMapComponent.propTypes = {
     getTokenSilently: PropTypes.func.isRequired,
     updatePoiList: PropTypes.func.isRequired,
     updateCategoryList: PropTypes.func.isRequired,
+    minPrice: PropTypes.number.isRequired,
+    maxPrice: PropTypes.number.isRequired,
 }
 
 export default LeafletMapComponent;
