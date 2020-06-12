@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
     Map, Marker, Popup, TileLayer,
 } from 'react-leaflet';
-import L, { divIcon } from 'leaflet';
+import L from 'leaflet';
 import './map.scss';
 import PropTypes from 'prop-types';
 import {
@@ -190,7 +190,7 @@ class LeafletMapComponent extends Component {
                             position={poi.position}
                             name={poi.name}
                             description={poi.description}
-                            icon={divIcon({
+                            icon={L.divIcon({
                                 className: "custom-marker-pin",
                                 iconAnchor: [0, 24],
                                 labelAnchor: [-6, 0],
