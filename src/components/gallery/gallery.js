@@ -16,7 +16,6 @@ class GalleryComponent extends React.Component {
   }
 
   async componentDidMount() {
-    
     const images = [];
     for (let i = 0; i < this.state.fileIds.length; i++) {
         const fileData = await getFile(this.state.fileIds[i], this.state.getTokenSilently, this.state.loginWithRedirect);

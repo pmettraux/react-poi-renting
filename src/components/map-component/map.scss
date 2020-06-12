@@ -13,41 +13,37 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
     .leaflet-popup-content {
+        font-family: 'Inder', sans-serif;
+        color: black;
+        text-transform: uppercase;
         h1{
-            color: black;
-            font-family: 'Signika';
+            font-family: 'Signika', sans-serif;
             font-size: 2rem; 
             font-weight: normal;
-            margin-bottom: 0rem;
+            margin-bottom: 0;
             text-align: center;
-            text-transform: uppercase;
         }
         p{
             color: gray; 
-            font-family: 'Inder';
             font-size: 20px; 
             font-weight: 500; 
             line-height: 32px; 
-            margin: 0 0 24px;
+            margin-bottom: 0;
             text-align: justify;
+            text-transform: initial;
+            &.homeType{
+                color: black;
+                font-size: 1.15rem;
+                text-align: center;
+                text-transform: uppercase;
+            }
         }
         h4{
             font-size: 1rem;
-            font-family: 'Inder';
             display: inline;
-            padding: 6px;
             border: none;  
             text-align: left;
-            text-transform: uppercase;
-        }
-        .homeType{
-            color: black;
-            font-family: 'Inder';
-            font-size: 1.15rem;
-            text-align: center;
-            text-transform: uppercase;
         }
     }
   }
@@ -66,7 +62,6 @@
 .search-input {
     padding-left: 15px !important;
 }
-
 .availability {
     text-transform: uppercase;
     font-weight: bold;
@@ -97,4 +92,17 @@
 .gridContainer2{
     padding-bottom: 2px;
     padding-top: 10px;
+}
+.custom-pin {
+    width: 3rem;
+    height: 2.4rem;
+    padding-top: 0.6rem;
+    line-height: 0.9rem;
+    display: block;
+    left: -1.5rem;
+    top: -1.5rem;
+    position: relative;
+    border-radius: 3rem 3rem 0;
+    transform: rotate(45deg);
+    border: 1px solid #FFFFFF
 }
