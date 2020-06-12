@@ -35,8 +35,7 @@ class GalleryComponent extends React.Component {
   render() {
     return (
       <div className="gallery-container">
-        <ImageGallery showThumbnails={false} items={this.state.images} showPlayButton={false}>
-        </ImageGallery>
+        <ImageGallery showThumbnails={false} items={this.state.images} showPlayButton={false}/>
       </div>
     );
   }

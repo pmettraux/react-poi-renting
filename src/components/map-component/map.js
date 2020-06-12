@@ -171,7 +171,8 @@ class LeafletMapComponent extends Component {
                     onTouchEnd={this.handleClickRelease}
                     onMouseDown={this.handleClickPress}
                     onMouseUp={this.handleClickRelease}
-                    onMouseLeave={this.handleClickRelease}>
+                    onMouseLeave={this.handleClickRelease}
+                    >
                     <TileLayer
                         attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
