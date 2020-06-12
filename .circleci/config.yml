@@ -34,7 +34,7 @@ jobs:
           at: .
       - run:
           name: Install sshpass
-          command: apt-get install sshpass
+          command: sudo apt-get install sshpass
       - run:
           name: Connect to ssh
           command: sshpass -p ${SSH_PASSWORD} ssh grp12@vlhprj645docker.hevs.ch
