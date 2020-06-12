@@ -26,6 +26,30 @@ jobs:
       - run:
           name: Quay Auth
           command: npm run test
+  deploy:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install sshpass
+          command: apt-get install sshpass
+      - run:
+          name: Connect to ssh
+          command: sshpass -p ${SSH_PASSWORD} ssh grp12@vlhprj645docker.hevs.ch
+      - run:
+          name: Go to project folder
+          command: cd react-poi-renting
+      - run:
+          name: Pull changes
+          command: git pull
+      - run:
+          name: Build docker-compose
+          command: docker-compose -f docker-compose.yml -f docker-compose.prod.yml build
+      - run:
+          name: Start docker-compose
+          command: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 workflows:
   version: 2
   workflow:
@@ -34,3 +58,8 @@ workflows:
           context: Build
       - test:
           context: Build
+      - deploy:
+          context: Build
+          requires:
+            - lint
+            - test
