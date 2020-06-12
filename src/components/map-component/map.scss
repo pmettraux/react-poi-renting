@@ -7,26 +7,43 @@
 }
 .request-popup{
     .leaflet-popup-content-wrapper {
-    width: 320px;
+    width: 350px;
     border-radius: 10px;
     border-style: none;
     display: flex;
     align-items: center;
     justify-content: center;
-
     .leaflet-popup-content {
+        font-family: 'Inder', sans-serif;
+        color: black;
+        text-transform: uppercase;
         h1{
-            color: black;
-            font-size: 1.3rem; 
+            font-family: 'Signika', sans-serif;
+            font-size: 2rem; 
             font-weight: normal;
-            margin-bottom: 0rem;
+            margin-bottom: 0;
             text-align: center;
         }
         p{
-            margin-top: 0rem;
-            color: dimgray;
+            color: gray; 
+            font-size: 20px; 
+            font-weight: 500; 
+            line-height: 32px; 
+            margin-bottom: 0;
+            text-align: justify;
+            text-transform: initial;
+            &.homeType{
+                color: black;
+                font-size: 1.15rem;
+                text-align: center;
+                text-transform: uppercase;
+            }
+        }
+        h4{
             font-size: 1rem;
-            text-align: center;
+            display: inline;
+            border: none;  
+            text-align: left;
         }
     }
   }
@@ -45,11 +62,10 @@
 .search-input {
     padding-left: 15px !important;
 }
-
 .availability {
     text-transform: uppercase;
     font-weight: bold;
-
+    padding-bottom: 10px;
     .available {
         text-align: center;
         color: #28c71a;
@@ -60,8 +76,23 @@
         color: #d81f0b;
     }
 }
-
-
+.buttonPopup{
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+.gridContainer1{
+    padding-bottom: 2px;
+    padding-top: 10px;
+    font-size: 1.15rem;
+    text-align: center;
+    font-family: 'Inder';
+    text-transform: uppercase;
+}
+.gridContainer2{
+    padding-bottom: 2px;
+    padding-top: 10px;
+}
 .custom-pin {
     width: 3rem;
     height: 2.4rem;
