@@ -9,11 +9,10 @@ async function getHeaders(getTokenSilently) {
   }
 }
 
-async function getImageHeaders(getTokenSilently) {
+async function getNoTypeHeaders(getTokenSilently) {
   let token = await getTokenSilently();
 
   return {
-    'Access-Control-Allow-Origin': '*', 
     Authorization: `Bearer ${token}`,
   }
 }
@@ -37,7 +36,7 @@ async function apiCall(callFunc, loginWithRedirect) {
 }
 
 export async function fileToImage(filePath, getTokenSilently, loginWithRedirect) {
-  let headers = await getImageHeaders(getTokenSilently);
+  let headers = await getNoTypeHeaders(getTokenSilently);
 
   const imageData = await apiCall(
     axios.get(`${process.env.REACT_APP_SERVER_URL}/file/download/${filePath}`,
@@ -49,6 +48,18 @@ export async function fileToImage(filePath, getTokenSilently, loginWithRedirect)
     loginWithRedirect)
     
   return Buffer.from(imageData.data, 'binary').toString('base64');
+}
+
+export async function fileToData(filePath, getTokenSilently, loginWithRedirect) {
+  let headers = await getNoTypeHeaders(getTokenSilently);
+
+  return await apiCall(
+    axios.get(`${process.env.REACT_APP_SERVER_URL}/file/download/${filePath}`,
+      { 
+        headers: headers, 
+      }
+    ),
+    loginWithRedirect);
 }
 
 
