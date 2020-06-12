@@ -3,6 +3,7 @@ import {
     Map, Marker, Popup, TileLayer,
 } from 'react-leaflet';
 import L from 'leaflet';
+import 'leaflet-gpx';
 import './map.scss';
 import PropTypes from 'prop-types';
 import {
@@ -13,7 +14,7 @@ import {
     EventAvailable,
     EventBusy,
 } from '@material-ui/icons';
-import { deletePoi, toggleAvailability, toggleLike } from '../../shared/api.service';
+import { deletePoi, toggleAvailability, toggleLike, fileToData } from '../../shared/api.service';
 import FormDialog from '../manage-poi/poi-modal/poi-modal';
 import Gallery from '../gallery/gallery';
 import ReactLeafletSearch from "react-leaflet-search";
@@ -49,6 +50,7 @@ class LeafletMapComponent extends Component {
             updateCategoryList: props.updateCategoryList,
             clickedPosition: undefined,
         };
+        this.mapRef = null;
         this.showDeleteButton = this.showDeleteButton.bind(this);
         this.showToggleAvailabilityButton = this.showToggleAvailabilityButton.bind(this);
         this.handleDeletePoi = this.handleDeletePoi.bind(this);
@@ -158,17 +160,32 @@ class LeafletMapComponent extends Component {
         return `hsl(${c}, 100%, 50%)`;
     }
 
+    async handleGpx(poi) {
+        if (poi.file !== null && this.mapRef !== null) {
+            // get the proper path
+            let filePath = poi.file.path.split('/');
+            filePath = filePath[filePath.length - 1];
+            const file = await fileToData(filePath,  this.state.getTokenSilently, this.state.loginWithRedirect);
+            const map = this.mapRef.leafletElement;
+            new L.GPX(file.data, {async: true}).on('loaded', function(e) {
+                map.fitBounds(e.target.getBounds());
+              }).addTo(map);
+        }
+    }
+
     render() {
         const position = [this.state.lat, this.state.lng]
         return (
             <div className="map-wrapper">
                 <Map
+                    ref={mapRef => { this.mapRef = mapRef } }
                     center={position}
                     zoom={this.state.zoom}
                     onTouchStart={this.handleClickPress}
                     onTouchEnd={this.handleClickRelease}
                     onMouseDown={this.handleClickPress}
                     onMouseUp={this.handleClickRelease}
+                    onMove={this.handleClickRelease}
                     onMouseLeave={this.handleClickRelease}>
                     <TileLayer
                         attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -186,6 +203,7 @@ class LeafletMapComponent extends Component {
                     />
                     {this.state.pois.map((poi) => (
                         <Marker
+                            onClick={() => this.handleGpx(poi)}
                             key={poi.key}
                             position={poi.position}
                             name={poi.name}
