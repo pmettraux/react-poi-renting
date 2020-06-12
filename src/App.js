@@ -29,27 +29,37 @@ function App() {
 
   const getListPois = async() => {
     const results = await getPois(getTokenSilently, loginWithRedirect);
-    const pois = results.data.map(poi => {
-      return {
-        key: poi.id,
-        position: {
-          lat: poi.lat,
-          lng: poi.lng,
-        },
-        name: poi.name,
-        description: poi.description,
-        creatorId:  poi.Creator.id,
-        categories: poi.Categories,
-        file: poi.File,
-        status: poi.Status,
-        image: poi.image
-      }
-    }).filter(poi => {
-      /*******
-       * As many test were done and some data were already populated
-       * this is here to filter POIS that have the right data in the database
-       ******/
-      return poi.status !== null
+    const pois = results.data.filter(poi => {
+        /*******
+         * As many test were done and some data were already populated
+         * this is here to filter POIS that have the right data in the database
+         ******/
+        return poi.Status !== null
+      }).map(poi => {
+        // get the price
+        const price = parseInt(poi.Categories.map(category => {
+          const match = category.name.match(/^price_(\d+)$/);
+          return {
+            match,
+          };
+        }).filter(category => {
+          return category.match !== null;
+        })[0].match[1]);
+        return {
+          key: poi.id,
+          position: {
+            lat: poi.lat,
+            lng: poi.lng,
+          },
+          name: poi.name,
+          description: poi.description,
+          creatorId:  poi.Creator.id,
+          categories: poi.Categories,
+          file: poi.File,
+          status: poi.Status,
+          image: poi.image,
+          price,
+        }
     })
     setPois(pois);
     setFilteredPois(pois);
@@ -82,15 +92,13 @@ function App() {
   return (
     <div className="App">
       <Router>
-      <MainHeader 
-        logout={logout} 
-        isAuthenticated={isAuthenticated} 
-        loginWithRedirect={loginWithRedirect}
-      />
+        <MainHeader 
+          logout={logout} 
+          isAuthenticated={isAuthenticated} 
+          loginWithRedirect={loginWithRedirect}
+        />
         <Switch>
-          <Route path="/about">
-            <About />
-          </Route>
+          <Route path="/about" component={About} />
           <Route path="/">
             <LeafletMapComponent 
               pois={filteredPois}
@@ -107,17 +115,13 @@ function App() {
             />
           </Route>
         </Switch>
-     
       </Router>
     </div>
   );
 }
 
-
 function About() {
   return <AboutContent />
 }
-
-
 
 export default App;

@@ -19,6 +19,7 @@
     "react-image-gallery": "^1.0.7",
     "react-leaflet": "^2.7.0",
     "react-leaflet-search": "^1.0.3",
+    "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "use-state-with-callback": "^1.0.18"
