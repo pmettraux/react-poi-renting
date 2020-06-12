@@ -91,19 +91,19 @@ function App() {
             <About />
           </Route>
           <Route path="/">
-          <LeafletMapComponent 
-            pois={filteredPois}
-            userId={user ? user.sub : undefined}
-            loginWithRedirect={loginWithRedirect} 
-            getTokenSilently={getTokenSilently}
-            updatePoiList={getListPois}
-            updateCategoryList={getListCategories}
-          />
-          <SidePanelComponent 
-            categories={categories}
-            setFilteredPois={setFilteredPois}
-            pois={pois}
-          />
+            <LeafletMapComponent 
+              pois={filteredPois}
+              userId={user ? user.sub : undefined}
+              loginWithRedirect={loginWithRedirect} 
+              getTokenSilently={getTokenSilently}
+              updatePoiList={getListPois}
+              updateCategoryList={getListCategories}
+            />
+            <SidePanelComponent 
+              categories={categories}
+              setFilteredPois={setFilteredPois}
+              pois={pois}
+            />
           </Route>
         </Switch>
      
