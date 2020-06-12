@@ -195,7 +195,7 @@ class LeafletMapComponent extends Component {
                                 iconAnchor: [0, 24],
                                 labelAnchor: [-6, 0],
                                 popupAnchor: [0, -36],
-                                html: `<span class="custom-pin" style="background-color:${this.getColorPercentage(poi.price)}"/>`
+                                html: `<span class="custom-pin" style="background-color:${this.getColorPercentage(poi.price)}">${poi.price.toLocaleString()}<br/>CHF</span>`
                             })}
                         >
                             <Popup className="request-popup">
