@@ -5,6 +5,12 @@
     align-content: center;
     width: 250px;
     margin-left: 1rem;
+    max-height: 250px;
+    max-width: 250px;
+    overflow:hidden;
+    object-fit: cover;
+    object-position: center;
+    height: inherit;
 }
 
 .image-gallery-left-nav .image-gallery-svg, .image-gallery-right-nav .image-gallery-svg {

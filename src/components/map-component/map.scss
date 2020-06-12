@@ -7,7 +7,7 @@
 }
 .request-popup{
     .leaflet-popup-content-wrapper {
-    width: 320px;
+    width: 400px;
     border-radius: 10px;
     border-style: none;
     display: flex;
@@ -17,16 +17,31 @@
     .leaflet-popup-content {
         h1{
             color: black;
-            font-size: 1.3rem; 
+            font-size: 2rem; 
             font-weight: normal;
             margin-bottom: 0rem;
             text-align: center;
+            text-transform: uppercase;
         }
         p{
-            margin-top: 0rem;
             color: dimgray;
             font-size: 1rem;
             text-align: center;
+            margin: 0;
+        }
+        h4{
+            font-size: 1rem;
+            display: inline;
+            padding: 6px;
+            border: none;  
+            text-align: left;
+            text-transform: uppercase;
+        }
+        .homeType{
+            color: black;
+            font-size: 1.15rem;
+            text-align: center;
+            text-transform: uppercase;
         }
     }
   }
@@ -49,7 +64,7 @@
 .availability {
     text-transform: uppercase;
     font-weight: bold;
-
+    padding-bottom: 10px;
     .available {
         text-align: center;
         color: #28c71a;
@@ -59,4 +74,20 @@
         text-align: center;
         color: #d81f0b;
     }
+}
+.buttonPopup{
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+.gridContainer1{
+    padding-bottom: 2px;
+    padding-top: 10px;
+    font-size: 1.15rem;
+    text-align: center;
+    text-transform: uppercase;
+}
+.gridContainer2{
+    padding-bottom: 2px;
+    padding-top: 10px;
 }
