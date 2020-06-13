@@ -151,19 +151,9 @@ class LeafletMapComponent extends Component {
     }    
     
     getColorPercentage(price) {
-
-        // min 350
-        // max 1200
-
-        // price 450
-
-        // max - min = 850
-
         const green = 120;
         const res = 0;
         const percent = (price - this.state.minPrice) * 100 / (this.state.maxPrice - this.state.minPrice);
-
-        console.log('percent', percent);
 
         const a = percent / 100,
             b = (res - green) * a,
