@@ -225,7 +225,7 @@ class LeafletMapComponent extends Component {
                                 <p className="homeType">
                                     {poi.homeType}
                                 </p>
-                                <Grid container spacing={0} className="gridContainer1" style={{ textAlign: 'center' }}>
+                                <Grid container spacing={0} className="price-container" style={{ textAlign: 'center' }}>
                                     <Grid item xs={6}>
                                         {poi.price.toLocaleString()} CHF
                                     </Grid>

@@ -7,7 +7,7 @@
 }
 .request-popup{
     .leaflet-popup-content-wrapper {
-    width: 350px;
+    width: 450px;
     border-radius: 10px;
     border-style: none;
     display: flex;
@@ -17,10 +17,16 @@
         font-family: 'Inder', sans-serif;
         color: black;
         text-transform: uppercase;
+        width: 450px !important;
+        .price-container{
+            font-family: 'Signika', sans-serif;
+            font-size: 1rem; 
+            font-weight: bold;
+        }
         h1{
             font-family: 'Signika', sans-serif;
-            font-size: 2rem; 
-            font-weight: normal;
+            font-size: 1rem; 
+            font-weight: bold;
             margin-bottom: 0;
             text-align: center;
         }
@@ -28,10 +34,10 @@
             color: gray; 
             font-size: 20px; 
             font-weight: 500; 
-            line-height: 32px; 
             margin-bottom: 0;
             text-align: justify;
             text-transform: initial;
+            margin-top: 0.5rem;
             &.homeType{
                 color: black;
                 font-size: 1.15rem;
